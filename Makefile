@@ -29,12 +29,16 @@ copy-vendor:
 # This is called by the beats packer before building starts
 .PHONY: before-build
 before-build:
+	@cp version.yml $(ES_BEATS)/dev-tools/packer/version.yml
 
 # collect が生成するファイルの中身が metricbeat 決め打ちなので置き換える
-collect2: collect
+update2: update
 	@for FILE in _meta/beat.yml _meta/beat.reference.yml sorabeat.yml sorabeat.reference.yml; do \
 		sed -i -e 's/metricbeat/sorabeat/ig' $$FILE ; \
 	done
 	@for FILE in _meta/beat.yml _meta/beat.reference.yml sorabeat.yml sorabeat.reference.yml; do \
 		sed -i -e 's/Metricbeat/Sorabeat/ig' $$FILE ; \
 	done
+
+package2: update2
+	make package

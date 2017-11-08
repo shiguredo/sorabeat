@@ -1,9 +1,9 @@
 # Directories
 /build/
 /vendor/
-/modules.d/
+/modules.d/*.yml
 /data/
 /sorabeat
 /fields.yml
-/sorabeat.reference.yml
+/sorabeat.*.yml
 /sorabeat.yml

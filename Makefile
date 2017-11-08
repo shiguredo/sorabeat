@@ -1,8 +1,8 @@
 BEAT_NAME=sorabeat
 BEAT_PATH=github.com/shiguredo/sorabeat
-BEAT_URL=https://${BEAT_PATH}
-BEAT_DESCRIPTION=?Sends WebRTC SFU Sora events to ElasticSearch or Logstash
-BEAT_DOC_URL?=https://github.com/shiguredo/sorabeat
+BEAT_URL=https://github.com/shiguredo/sorabeat
+BEAT_DESCRIPTION=Sends WebRTC SFU Sora events to ElasticSearch or Logstash
+BEAT_DOC_URL=https://github.com/shiguredo/sorabeat
 SYSTEM_TESTS=false
 TEST_ENVIRONMENT=false
 ES_BEATS?=./vendor/github.com/elastic/beats

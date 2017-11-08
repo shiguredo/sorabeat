@@ -42,44 +42,67 @@ go build -i
 
 *注意*
 
-トップレベルディレクトリの中の以下のファイルはビルド、パッケージなど上書きされるので注意
+作法として、 `module/sora/_meta/` 以下のファイルを編集するらしい。その後、 `_meta/` 以下と
+トップレベル以下の `fields.yml`, `sorabeat.yml` , `sorabeat.reference.yml` が生成される。
+トップレベル以下のファイルが使用される。
+そのため、トップレベルディレクトリの中の以下のファイルは make ターゲットにより上書きされるので注意。
 
 - fields.yml
 - sorabeat.yml
 - sorabeat.reference.yml
+- modules.d/
 
 *Tips*
 
-- modules.d/*.yml は gitignore に入っているので、 *.yml.disabled をコピーしてローカルで使える
 - 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める
   例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
-
 
 生成
 
 ```
-make update
+make update2
 ```
 
 
 ### 実行 (debug 用)
 
 ```
-./sorabeat -c sorabeat.yml -e -d "*"
+./sorabeat -c sorabeat.edited.yml -e -d "*"
 ```
+
+### バージョン設定
+
+```
+VERSION=0.1.0 make set_version
+```
+
+確認は `make get_version`
+
+*TODO* そのうち git tag と連動したい
 
 ### パッケージング
 
-```
-make package
-```
-
-Linux/AMD64 向けだけ *TODO* 全部出てくる
+デフォルトでは SNAPSHOT が生成される
 
 ```
-TARGETS= TARGETS_OLD=linux/amd64 make package
+make package2
 ```
 
+`build/upload/` 以下にパッケージが生成される。
+
+リリース用
+
+```
+SNAPSHOT=false make package2
+```
+
+### Linux/ARM64 用バイナリ生成
+
+```
+GOOS=linux GOARCH=arm64 make
+```
+
+パッケージングは未調査
 
 ---------------
 

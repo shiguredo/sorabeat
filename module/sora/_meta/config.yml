@@ -1,6 +1,5 @@
 - module: sora
   metricsets: ["connections"]
-  enabled: false
   period: 10s
-  hosts: ["localhost"]
+  hosts: ["localhost:3000"]
 

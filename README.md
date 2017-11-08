@@ -1,4 +1,89 @@
-# sorabeat
+# Sorabeat
+
+## カスタム beat 開発
+
+ref.
+- Creating a Beat based on Metricbeat | Metricbeat Reference [5.6] | Elastic
+  https://www.elastic.co/guide/en/beats/metricbeat/current/creating-beat-from-metricbeat.html
+
+### 準備
+
+- Go
+- Python 2.7 (ノ￣￣∇￣￣)ノ‾‾‾━━┻━┻━━
+- virtualenv
+
+### 生成
+
+```
+go get github.com/elastic/beats/metricbeat
+cd $GOPATH/src/github.com/elastic/beats/
+git checkout v6.0.0-rc2
+python ${GOPATH}/src/github.com/elastic/beats/script/generate.py --type=metricbeat
+cd ${GOPATH}/src/github.com/shiguredo/sorabeat
+make setup
+## module => sora
+## metricset => connections
+```
+
+### ビルド
+
+```
+make
+```
+
+or
+
+```
+go build -i
+```
+
+
+### 設定ファイル
+
+*注意*
+
+トップレベルディレクトリの中の以下のファイルはビルド、パッケージなど上書きされるので注意
+
+- fields.yml
+- sorabeat.yml
+- sorabeat.reference.yml
+
+*Tips*
+
+- modules.d/*.yml は gitignore に入っているので、 *.yml.disabled をコピーしてローカルで使える
+- 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める
+  例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
+
+
+生成
+
+```
+make update
+```
+
+
+### 実行 (debug 用)
+
+```
+./sorabeat -c sorabeat.yml -e -d "*"
+```
+
+### パッケージング
+
+```
+make package
+```
+
+Linux/AMD64 向けだけ *TODO* 全部出てくる
+
+```
+TARGETS= TARGETS_OLD=linux/amd64 make package
+```
+
+
+---------------
+
+以下、生成された README そのまま
 
 sorabeat is a beat based on metricbeat which was generated with metricbeat/metricset generator.
 

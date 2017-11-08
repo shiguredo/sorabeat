@@ -2,3 +2,8 @@
 /build/
 /vendor/
 /modules.d/
+/data/
+/sorabeat
+/fields.yml
+/sorabeat.reference.yml
+/sorabeat.yml

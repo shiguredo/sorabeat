@@ -10,6 +10,8 @@ GOPACKAGES=$(shell govendor list +local)
 PREFIX?=.
 NOTICE_FILE=NOTICE
 
+BUILD_DIR?=build
+
 # Path to the libbeat Makefile
 -include $(ES_BEATS)/metricbeat/Makefile
 
@@ -32,6 +34,7 @@ before-build:
 	@cp version.yml $(ES_BEATS)/dev-tools/packer/version.yml
 
 # collect が生成するファイルの中身が metricbeat 決め打ちなので置き換える
+.PHONY: update2
 update2: update
 	@for FILE in _meta/beat.yml _meta/beat.reference.yml sorabeat.yml sorabeat.reference.yml; do \
 		sed -i -e 's/metricbeat/sorabeat/ig' $$FILE ; \
@@ -40,5 +43,11 @@ update2: update
 		sed -i -e 's/Metricbeat/Sorabeat/ig' $$FILE ; \
 	done
 
+.PHONY: package2
 package2: update2
 	make package
+
+linux-x86_64-bin:
+	@mkdir -p $(BUILD_DIR}/linux-x86_64/
+	GOOS=linux GOARCH=x86_64 go build -i -o ${BUILD_DIR}/linux-x86_64/sorabeat
+

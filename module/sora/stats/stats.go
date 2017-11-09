@@ -1,4 +1,4 @@
-package connections
+package stats
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ import (
 // init registers the MetricSet with the central registry.
 // The New method will be called after the setup of the module and before starting to fetch data
 func init() {
-	if err := mb.Registry.AddMetricSet("sora", "connections", New, hostParser); err != nil {
+	if err := mb.Registry.AddMetricSet("sora", "stats", New, hostParser); err != nil {
 		panic(err)
 	}
 }
@@ -23,7 +23,7 @@ const (
 	httpPath = "/"
 	httpMethod = "POST"
 	targetHeaderKey = "x-sora-target"
-	targetHeaderValue = "Sora_20171101.GetStatsAllConnections"
+	targetHeaderValue = "Sora_20171010.GetStatsReport"
 )
 
 var (
@@ -46,6 +46,7 @@ type MetricSet struct {
 // Part of new is also setting up the configuration by processing additional
 // configuration entries if needed.
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
+
 	config := struct{}{}
 
 	if err := base.Module().UnpackConfig(&config); err != nil {
@@ -64,7 +65,8 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 // Fetch methods implements the data gathering and data conversion to the right format
 // It returns the event which is then forward to the output. In case of an error, a
 // descriptive error must be returned.
-func (m *MetricSet) Fetch() ([]common.MapStr, error) {
+func (m *MetricSet) Fetch() (common.MapStr, error) {
+
 	response, err := m.http.FetchResponse()
 	if err != nil {
 		return nil, err
@@ -76,19 +78,12 @@ func (m *MetricSet) Fetch() ([]common.MapStr, error) {
 		return nil, err
 	}
 
-	var connections []common.MapStr
-	err = json.Unmarshal(body, &connections)
+	var stats map[string]interface{}
+	err = json.Unmarshal(body, &stats)
 	if err != nil {
 		return nil, err
 	}
 
-	// 接続ごとの情報にフィールドを追加する
-	for _, conn := range connections {
-		// チャネル、クライアントのIDを連結したもの
-		channel_id, _ := conn["channel_id"].(string)
-		client_id, _ := conn["client_id"].(string)
-		conn["channel_client_id"] = channel_id + "/" + client_id
-	}
-
-	return connections, nil
+	// TODO: erlang run queue にフィールドを追加する
+	return stats, nil
 }

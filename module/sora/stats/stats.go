@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"math"
+	"fmt"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/metricbeat/helper"
@@ -32,6 +33,9 @@ var (
 		DefaultScheme: defaultScheme,
 		DefaultPath:   httpPath,
 	}.Build()
+
+	float_array_keys = []string{"active_tasks", "active_tasks_all",
+		"run_queue_legths", "run_queue_lengths_all"}
 )
 
 // MetricSet type defines all fields of the MetricSet
@@ -85,22 +89,43 @@ func (m *MetricSet) Fetch() (common.MapStr, error) {
 		return nil, err
 	}
 
-	// TODO: erlang run queue にフィールドを追加する
+	// TODO: erlang_vm フィールドの数値リストからいくつかフィールドを追加する
+	if val, ok := stats["erlang_vm"]; ok {
+		erlang_vm, _ := val.(map[string]interface{})
+		statistics, _ := erlang_vm["statistics"].(map[string]interface{})
+		for _, key := range float_array_keys {
+			addStats(key, statistics)
+		}
+	}
+
 	return stats, nil
 }
 
 func addStats(key string, m map[string]interface{}) {
-	value := m[key]
-	m["skew"] = "skew"
-	numbers, _ := value.([]float64)
+	value, has_key := m[key];
+	if !has_key {
+		return
+	}
+
+	var numbers []float64
+	for i, v := range value.([]interface{}) {
+		fmt.Printf("[%#v]\n", i)
+		fmt.Printf("{%#v}\n", v)
+		numbers = append(numbers, v.(float64))
+	}
+
+	if len(numbers) == 0 {
+		return
+	}
+
 	mean := mean(numbers)
 	m[key + "_mean"] = mean
+	m[key + "_stddev"] = calcStdDev(numbers, mean)
 	min, max := MinMax(numbers)
 	m[key + "_min"] = min
 	m[key + "_max"] = max
-	m[key + "_stddev"] = calcStdDev(numbers, mean)
 	// TODO: 偏りの良い指標、ひとまず Max / Min でいく
-	m[key + "_skew"] = max / math.Max(min, 1.)
+	m[key + "_imbalance"] = max / math.Max(min, 1.)
 }
 
 func MinMax(numbers []float64) (min float64, max float64) {
@@ -135,6 +160,6 @@ func calcStdDev(numbers []float64, mean float64) float64 {
     for _, number := range numbers {
         total += math.Pow(number-mean, 2)
     }
-    variance := total / float64(len(numbers)-1)
+    variance := total / float64(len(numbers))
     return math.Sqrt(variance)
 }

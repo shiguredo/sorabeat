@@ -3,23 +3,16 @@
 package stats
 
 import (
-	// "bufio"
-	// "net"
 	"net/http"
 	"net/http/httptest"
-	// "os"
-	// "path/filepath"
-	// "sync"
 	"testing"
-	// "time"
 
-	// "github.com/elastic/beats/libbeat/common"
 	mbtest "github.com/elastic/beats/metricbeat/mb/testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-// response is a raw response copied from an Sora server.
+// dummy response body
 const response = `{
     "average_duration_sec": 0,
     "average_setup_time_msec": 107,
@@ -58,10 +51,10 @@ const response = `{
                 0
             ],
             "active_tasks_all": [
-                1,
-                0,
-                0,
-                0
+                4,
+                10,
+                2,
+                5
             ],
             "context_switches": 136176,
             "exact_reductions": {
@@ -112,16 +105,18 @@ const response = `{
     "total_successful_connections": 3
 }`
 
+const delta = 0.01
+
 func TestAddStats(t *testing.T) {
-	vs := []float64{1., 2., 3.}
+	vs := []interface{}{1., 2., 3.}
 	m := make(map[string]interface{})
 	m["vs"] = vs
 	addStats("vs", m)
-	assert.EqualValues(t, 1., m["vs_min"])
-	assert.EqualValues(t, 3., m["vs_max"])
-	assert.EqualValues(t, 2., m["vs_mean"])
-	assert.EqualValues(t, 1., m["vs_stddev"])
-	assert.EqualValues(t, 3., m["vs_skew"])
+	assert.InDelta(t, 1.00, m["vs_min"], delta)
+	assert.InDelta(t, 3.00, m["vs_max"], delta)
+	assert.InDelta(t, 2.00, m["vs_mean"], delta)
+	assert.InDelta(t, 0.82, m["vs_stddev"], delta)
+	assert.InDelta(t, 3.00, m["vs_imbalance"], delta)
 }
 
 func TestFetchEventContents(t *testing.T) {
@@ -143,14 +138,19 @@ func TestFetchEventContents(t *testing.T) {
 		t.FailNow()
 	}
 
-	// t.Logf("%s/%s event: %+v", f.Module().Name(), f.Name(), event.StringToPrint())
-
 	assert.Equal(t, 0., event["total_duration_sec"])
-	// assert.Equal(t, .0628293, event["bytes_per_sec"])
+	erlang_vm, _ := event["erlang_vm"].(map[string]interface{})
+	statistics, _ := erlang_vm["statistics"].(map[string]interface{})
 
-	// workers := event["workers"].(common.MapStr)
-	// assert.EqualValues(t, 1, workers["busy"])
-	// assert.EqualValues(t, 99, workers["idle"])
+	active_tasks, _ := statistics["active_tasks"]
+	assert.Equal(t, []interface{}{1., 0., 0.},  active_tasks)
+	assert.InDelta(t, 0., statistics["active_tasks_min"], delta)
+	assert.InDelta(t, 1., statistics["active_tasks_max"], delta)
+	assert.InDelta(t, 1., statistics["active_tasks_imbalance"], delta)
 
-	// connections := event["connections"].(common.MapStr)
+	assert.InDelta(t,  2., statistics["active_tasks_all_min"], delta)
+	assert.InDelta(t, 10., statistics["active_tasks_all_max"], delta)
+	assert.InDelta(t,  5.25, statistics["active_tasks_all_mean"], delta)
+	assert.InDelta(t,  2.95, statistics["active_tasks_all_stddev"], delta)
+	assert.InDelta(t,  5., statistics["active_tasks_all_imbalance"], delta)
 }

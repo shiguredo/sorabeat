@@ -3,6 +3,7 @@ package stats
 import (
 	"encoding/json"
 	"io/ioutil"
+	"math"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/metricbeat/helper"
@@ -86,4 +87,54 @@ func (m *MetricSet) Fetch() (common.MapStr, error) {
 
 	// TODO: erlang run queue にフィールドを追加する
 	return stats, nil
+}
+
+func addStats(key string, m map[string]interface{}) {
+	value := m[key]
+	m["skew"] = "skew"
+	numbers, _ := value.([]float64)
+	mean := mean(numbers)
+	m[key + "_mean"] = mean
+	min, max := MinMax(numbers)
+	m[key + "_min"] = min
+	m[key + "_max"] = max
+	m[key + "_stddev"] = calcStdDev(numbers, mean)
+	// TODO: 偏りの良い指標、ひとまず Max / Min でいく
+	m[key + "_skew"] = max / math.Max(min, 1.)
+}
+
+func MinMax(numbers []float64) (min float64, max float64) {
+    max = numbers[0]
+    min = numbers[0]
+    for _, value := range numbers {
+        if max < value {
+            max = value
+        }
+        if min > value {
+            min = value
+        }
+    }
+    return min, max
+}
+
+func mean(numbers []float64) float64 {
+	total := calcTotal(numbers)
+	return total / float64(len(numbers))
+}
+
+func calcTotal(numbers []float64) (total float64) {
+    for _, x := range numbers {
+        total += x
+    }
+    return total
+}
+
+// N-1 で割るバージョン
+func calcStdDev(numbers []float64, mean float64) float64 {
+    total := 0.0
+    for _, number := range numbers {
+        total += math.Pow(number-mean, 2)
+    }
+    variance := total / float64(len(numbers)-1)
+    return math.Sqrt(variance)
 }

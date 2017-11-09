@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"math"
-	"fmt"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/metricbeat/helper"
@@ -35,7 +34,7 @@ var (
 	}.Build()
 
 	float_array_keys = []string{"active_tasks", "active_tasks_all",
-		"run_queue_legths", "run_queue_lengths_all"}
+		"run_queue_lengths", "run_queue_lengths_all"}
 )
 
 // MetricSet type defines all fields of the MetricSet
@@ -89,7 +88,7 @@ func (m *MetricSet) Fetch() (common.MapStr, error) {
 		return nil, err
 	}
 
-	// TODO: erlang_vm フィールドの数値リストからいくつかフィールドを追加する
+	// erlang_vm フィールドの数値リストからいくつかフィールドを追加する
 	if val, ok := stats["erlang_vm"]; ok {
 		erlang_vm, _ := val.(map[string]interface{})
 		statistics, _ := erlang_vm["statistics"].(map[string]interface{})
@@ -108,9 +107,7 @@ func addStats(key string, m map[string]interface{}) {
 	}
 
 	var numbers []float64
-	for i, v := range value.([]interface{}) {
-		fmt.Printf("[%#v]\n", i)
-		fmt.Printf("{%#v}\n", v)
+	for _, v := range value.([]interface{}) {
 		numbers = append(numbers, v.(float64))
 	}
 

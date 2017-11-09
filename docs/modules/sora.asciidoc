@@ -32,5 +32,9 @@ The following metricsets are available:
 
 * <<metricbeat-metricset-sora-connections,connections>>
 
+* <<metricbeat-metricset-sora-stats,stats>>
+
 include::sora/connections.asciidoc[]
+
+include::sora/stats.asciidoc[]
 

@@ -223,4 +223,14 @@
               description: >
                 Example field
 
+        - name: stats
+          type: group
+          description: >
+            stats
+          fields:
+            - name: example
+              type: keyword
+              description: >
+                Example field
+
 

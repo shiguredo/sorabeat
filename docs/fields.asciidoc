@@ -347,3 +347,18 @@ type: keyword
 Example field
 
 
+[float]
+== stats Fields
+
+stats
+
+
+
+[float]
+=== sora.stats.example
+
+type: keyword
+
+Example field
+
+

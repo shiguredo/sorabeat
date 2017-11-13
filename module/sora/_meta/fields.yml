@@ -1,0 +1,11 @@
+- key: sora
+  title: "sora"
+  description: >
+    []experimental
+
+    sora Module
+  fields:
+    - name: sora
+      type: group
+      description: >
+      fields:

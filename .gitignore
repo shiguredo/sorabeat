@@ -1,0 +1,6 @@
+# Directories
+/build/
+/vendor/
+/modules.d/*.yml
+/data/
+/sorabeat

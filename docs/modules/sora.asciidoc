@@ -1,0 +1,40 @@
+////
+This file is generated! See scripts/docs_collector.py
+////
+
+[[metricbeat-module-sora]]
+== sora Module
+
+This is the sora Module.
+
+
+
+[float]
+=== Example configuration
+
+The sora module supports the standard configuration options that are described
+in <<configuration-metricbeat>>. Here is an example configuration:
+
+[source,yaml]
+----
+sorabeat.modules:
+- module: sora
+  metricsets: ["connections"]
+  period: 10s
+  hosts: ["localhost:3000"]
+
+----
+
+[float]
+=== Metricsets
+
+The following metricsets are available:
+
+* <<metricbeat-metricset-sora-connections,connections>>
+
+* <<metricbeat-metricset-sora-stats,stats>>
+
+include::sora/connections.asciidoc[]
+
+include::sora/stats.asciidoc[]
+

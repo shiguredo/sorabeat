@@ -33,6 +33,12 @@ copy-vendor:
 before-build:
 	@cp version.yml $(ES_BEATS)/dev-tools/packer/version.yml
 
+.PHONY: set_version2
+set_version2: set_version
+	git checkout sorabeat.yml
+	git checkout sorabeat.reference.yml
+	git checkout _meta
+
 # collect が生成するファイルの中身が metricbeat 決め打ちなので置き換える
 .PHONY: update2
 update2: update

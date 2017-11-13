@@ -114,6 +114,9 @@ go build -i
 make update2
 ```
 
+*NOTE* 生成されるファイルが metricbeat となる(libbeat/metricbeat での抽象化不足?)バグのため、
+update target を update2 で少々上書きしている。以下に出てくる set_version2, package2 も同様。
+
 
 ### 実行 (debug 用)
 
@@ -124,18 +127,20 @@ make update2
 ### バージョン設定
 
 ```
-VERSION=0.1.0 make set_version
+VERSION=0.1.0 make set_version2
 ```
 
 確認は `make get_version`
 
 *TODO* そのうち git tag と連動したい
 
-### パッケージング
+### パッケージ生成
 
 デフォルトでは SNAPSHOT が生成される
 
 ```
+make clean
+make python-env
 make package2
 ```
 
@@ -144,6 +149,8 @@ make package2
 リリース用
 
 ```
+make clean
+make python-env
 SNAPSHOT=false make package2
 ```
 

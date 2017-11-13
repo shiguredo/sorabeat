@@ -1,5 +1,56 @@
 # Sorabeat
 
+Sorabeat は [WebRTC SFU Sora](https://sora.shiguredo.jp) の統計情報を Elasticsearch  や Logstash
+に送信するソフトウェアです。
+
+Elastic Beats のひとつとして、libbeat, metricbeat を基に作られています。
+
+## インストール
+
+releases から RPM/DEB/tar.gz を取得してインストールします。
+
+## 設定
+
+`/etc/sorabeat/sorabeat.yml`, `/etc/sorabeat/modules.d/sora.yml` を編集します。
+
+`sorabeat.yml` では、Elasticsearch などの接続先や、認証情報を設定します。
+一般的な設定は metricbeat と同様です。
+[Configuring Metricbeat | Metricbeat Reference \[6.0\] | Elastic](https://www.elastic.co/guide/en/beats/metricbeat/6.0/configuring-howto-metricbeat.html)
+を参照してください。
+
+`sora.yml` では、Sora の接続先、データ取得間隔の設定を行います。
+以下にサンプルを示します。
+
+```
+- module: sora
+  metricsets: ["stats", "connections"]
+  # 更新間隔を指定します
+  period: 5s
+  # Sora サーバの API アクセスのホスト、ポートを指定します。
+  hosts: ["127.0.0.1:3000"]
+```
+
+## 起動
+
+RPM でインストールした場合、service コマンドで起動、終了を制御できます。
+
+```
+service sorabeat start
+```
+
+ログは `/var/log/sorabeat/` 以下に出力されます。
+
+*TODO* : DEB, tar.gz インストールのときの使い方を追加する
+
+## Elasticsearch
+
+Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
+
+
+------------
+
+# 以下、開発者向け
+
 ## カスタム beat 開発
 
 ref.
@@ -102,11 +153,11 @@ SNAPSHOT=false make package2
 GOOS=linux GOARCH=arm64 make
 ```
 
-パッケージングは未調査
+ARM 向けパッケージングは未調査
 
 ---------------
 
-以下、生成された README そのまま
+# 以下、生成された README そのまま
 
 sorabeat is a beat based on metricbeat which was generated with metricbeat/metricset generator.
 

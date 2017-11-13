@@ -16,3 +16,10 @@
 ## 1.0.0
 
 最初のリリース
+
+### ADD
+
+- WebRTC SFU Sora の統計情報取得機能
+
+  - Sora_20171010.GetStatsReport
+  - Sora_20171101.GetStatsAllConnections

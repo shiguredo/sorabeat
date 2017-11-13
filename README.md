@@ -131,11 +131,13 @@ VERSION=0.1.0 make set_version
 
 *TODO* そのうち git tag と連動したい
 
-### パッケージング
+### パッケージ生成
 
 デフォルトでは SNAPSHOT が生成される
 
 ```
+make clean
+make python-env
 make package2
 ```
 
@@ -144,6 +146,8 @@ make package2
 リリース用
 
 ```
+make clean
+make python-env
 SNAPSHOT=false make package2
 ```
 

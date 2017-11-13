@@ -10,7 +10,7 @@ GOPACKAGES=$(shell govendor list +local)
 PREFIX?=.
 NOTICE_FILE=NOTICE
 
-BUILD_DIR?=build
+BUILD_DIR?=$(shell pwd)/build
 
 # Path to the libbeat Makefile
 -include $(ES_BEATS)/metricbeat/Makefile

@@ -162,6 +162,17 @@ GOOS=linux GOARCH=arm64 make
 
 ARM 向けパッケージングは未調査
 
+### beats のバージョン更新
+
+```
+cd /path/to/sorabeat
+rm -rf vendor
+cd $GOPATH/src/github.com/elastic/beats
+git fetch
+git checkout v6.0.0 # バージョン指定すること
+make copy-vendor
+```
+
 ---------------
 
 # 以下、生成された README そのまま

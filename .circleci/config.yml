@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    docker:
+      -image: go:1.9.2-stretch
+
+    working_directory: /go/src/github.com/shiguredo/sorabeat
+
+    steps:
+      - checkout
+      - run:
+          name: Get dependencies
+          command: |
+            go get github.com/elastic/beats/metricbeat
+            cd $GOPATH/src/github.com/elastic/beats/
+            git checkout v6.0.0
+      - run:
+          name: Set vendor
+          command: |
+            make copy-vendor
+      - run:
+          name: Build
+          command: |
+            go build

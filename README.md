@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/shiguredo/sorabeat.svg?style=svg)](https://circleci.com/gh/shiguredo/sorabeat)
+[![CircleCI](https://circleci.com/gh/shiguredo/sorabeat/tree/develop.svg?style=svg)](https://circleci.com/gh/shiguredo/sorabeat/tree/develop)
 
 # Sorabeat
 

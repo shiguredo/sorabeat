@@ -70,4 +70,4 @@ ci-setup:
 	go get -v -t -d ./...
 	make checkout-beats
 	make copy-vendor
-	apt install python-virtualenv
+	sudo apt install python-virtualenv

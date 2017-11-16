@@ -44,10 +44,56 @@ service sorabeat start
 
 *TODO* : DEB, tar.gz インストールのときの使い方を追加する
 
-## Elasticsearch
+## Elasticsearch インデックス
 
 Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
 
+## stats メトリックセット
+
+ソースは Sora の `GetStatsReport` です。
+フィールド名は `sora.stats.` をプレフィックスに持ちます。例えば `average_duration_sec`
+は Elasticsearch では `sora.stats.average_duration_sec` フィールドに対応します。
+
+### Sorabeat が追加するフィールド
+
+以下の項目はもともと数値のリストです。
+
+- erlang_vm.statistics.active_tasks
+- erlang_vm.statistics.active_tasks_all
+- erlang_vm.statistics.run_queue_lengths
+- erlang_vm.statistics.run_queue_lengths_all
+
+それらに対して最大値(max)、最小値(min)、平均値(mean)、標準偏差(stdddv)と
+不均衡さ(imbalance)を
+フィールドとして追加します。`erlang_vm.statistics.active_tasks` を例に取ると
+次のフィールドが追加されます。
+
+- sora.stats.erlang_vm.statistics.active_tasks_max
+- sora.stats.erlang_vm.statistics.active_tasks_min
+- sora.stats.erlang_vm.statistics.active_tasks_mean
+- sora.stats.erlang_vm.statistics.active_tasks_stddev
+- sora.stats.erlang_vm.statistics.active_tasks_imbalance
+
+各リスト values の不均衡さ(imbalance)は次で計算しています。
+
+```
+                    最大値(values)
+不均衡さ = ------------------------------
+             最大値(最小値(values) , 1)
+```
+
+
+## connections メトリックセット
+
+ソースは Sora の `GetStatsAllConnections` です。
+フィールド名は `sora.connections.` をプレフィックスに持ちます。例えば `rtp` の下にある
+`total_received_bytes` は Elasticsearch では `sora.connections.rtp.total_received_bytes`
+フィールドに対応します。
+
+### Sorabeat が追加するフィールド
+
+- `sora.connections.channel_client_id`: `channel_id` と `client_id` を
+  スラッシュ (`/`) で結合した文字列
 
 ------------
 

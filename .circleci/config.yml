@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build-and-test:
+  build:
     docker:
       - image: circleci/golang:1.9.2-stretch
 
@@ -17,36 +17,3 @@ jobs:
       - run:
           name: Test
           command: go test -v ./...
-
-  package:
-    docker:
-      - image: circleci/golang:1.9.2-stretch
-
-    working_directory: /go/src/github.com/shiguredo/sorabeat
-
-    steps:
-      - checkout
-      - run:
-          name: Setup
-          command: make ci-setup
-      - run:
-          name: Package
-          command: |
-            make clean
-            make python-env
-            make package2
-
-      - store_artifacts:
-          path: /go/src/github.com/shiguredo/sorabeat/build/upload
-
-workflows:
-  version: 2
-  all:
-    jobs:
-      - build-and-test
-      - package:
-          filters:
-            branches:
-              only:
-                - master
-                - feature/circleci

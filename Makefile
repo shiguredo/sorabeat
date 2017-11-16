@@ -54,6 +54,9 @@ package2: update2
 	make package
 
 linux-x86_64-bin:
-	@mkdir -p $(BUILD_DIR}/linux-x86_64/
-	GOOS=linux GOARCH=x86_64 go build -i -o ${BUILD_DIR}/linux-x86_64/sorabeat
+	@mkdir -p $(BUILD_DIR)/linux-x86_64/
+	GOOS=linux GOARCH=x86_64 go build -i -o $(BUILD_DIR)/linux-x86_64/sorabeat
 
+linux-arm64-bin:
+	@mkdir -p $(BUILD_DIR)/linux-arm64/
+	GOOS=linux GOARCH=arm64 go build -i -o $(BUILD_DIR)/linux-arm64/sorabeat

@@ -38,7 +38,15 @@ jobs:
 
       - store_artifacts:
           path: /go/src/github.com/shiguredo/sorabeat/build/upload
-    branches:
-      only:
-        - master
-        - feature/circleci
+
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build-and-test
+      - package:
+          filters:
+            branches:
+              only:
+                - master
+                - feature/circleci

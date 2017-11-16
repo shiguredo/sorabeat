@@ -11,9 +11,8 @@ jobs:
       - run:
           name: Get dependencies
           command: |
-            go get github.com/elastic/beats/metricbeat
-            cd $GOPATH/src/github.com/elastic/beats/
-            git checkout v6.0.0
+            go get -v -t -d ./...
+            make checkout-beats
       - run:
           name: Set vendor
           command: |

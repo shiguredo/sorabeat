@@ -11,6 +11,7 @@ PREFIX?=.
 NOTICE_FILE=NOTICE
 
 BUILD_DIR?=$(shell pwd)/build
+BEAT_CHECKOUT_TAG=v6.0.0
 
 # Path to the libbeat Makefile
 -include $(ES_BEATS)/metricbeat/Makefile
@@ -20,6 +21,11 @@ BUILD_DIR?=$(shell pwd)/build
 setup: copy-vendor
 	make create-metricset
 	make collect
+
+.PHONY: checkout-beats
+checkout-beats:
+	cd ${GOPATH}/src/github.com/elastic/beats
+	git checkout v6.0.0
 
 # Copy beats into vendor directory
 .PHONY: copy-vendor

@@ -19,10 +19,10 @@ func init() {
 }
 
 const (
-	defaultScheme = "http"
-	httpPath = "/"
-	httpMethod = "POST"
-	targetHeaderKey = "x-sora-target"
+	defaultScheme     = "http"
+	httpPath          = "/"
+	httpMethod        = "POST"
+	targetHeaderKey   = "x-sora-target"
 	targetHeaderValue = "Sora_20171101.GetStatsAllConnections"
 )
 
@@ -39,7 +39,7 @@ var (
 // multiple fetch calls.
 type MetricSet struct {
 	mb.BaseMetricSet
-	http         *helper.HTTP
+	http *helper.HTTP
 }
 
 // New create a new instance of the MetricSet

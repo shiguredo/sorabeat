@@ -181,14 +181,14 @@ func TestFetchEventContents(t *testing.T) {
 
 		rtp0 := c0["rtp"].(map[string]interface{})
 		assert.InDelta(t, 1363876., rtp0["total_received_bytes"], delta)
-		assert.InDelta(t,    1975., rtp0["total_received_packets"], delta)
+		assert.InDelta(t, 1975., rtp0["total_received_packets"], delta)
 	}
 	{
 		c1 := events[1]
 		assert.Equal(t, "sorabeat", c1["channel_id"])
 		assert.Equal(t, "d3850543-34d4-4b39-bf7d-570b4ee3ff43", c1["client_id"])
 		turn1 := c1["turn"].(map[string]interface{})
-		assert.InDelta(t,    6., turn1["total_received_allocate_request"], delta)
+		assert.InDelta(t, 6., turn1["total_received_allocate_request"], delta)
 		assert.InDelta(t, 2187., turn1["total_sent_channel_data"], delta)
 	}
 }

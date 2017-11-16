@@ -151,7 +151,6 @@ func calcTotal(numbers []float64) (total float64) {
 	return total
 }
 
-// N-1 で割るバージョン
 func calcStdDev(numbers []float64, mean float64) float64 {
 	total := 0.0
 	for _, number := range numbers {

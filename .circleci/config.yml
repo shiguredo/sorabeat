@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9.2-stretch
+
+    working_directory: /go/src/github.com/shiguredo/sorabeat
+
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: make ci-setup
+      - run:
+          name: Build
+          command: go build
+      - run:
+          name: Test
+          command: go test -v ./...

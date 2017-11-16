@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/shiguredo/sorabeat.svg?style=svg)](https://circleci.com/gh/shiguredo/sorabeat)
+
 # Sorabeat
 
 Sorabeat は [WebRTC SFU Sora](https://sora.shiguredo.jp) の統計情報を Elasticsearch  や Logstash

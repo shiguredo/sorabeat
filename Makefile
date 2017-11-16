@@ -11,6 +11,7 @@ PREFIX?=.
 NOTICE_FILE=NOTICE
 
 BUILD_DIR?=$(shell pwd)/build
+BEAT_CHECKOUT_TAG=v6.0.0
 
 # Path to the libbeat Makefile
 -include $(ES_BEATS)/metricbeat/Makefile
@@ -20,6 +21,10 @@ BUILD_DIR?=$(shell pwd)/build
 setup: copy-vendor
 	make create-metricset
 	make collect
+
+.PHONY: checkout-beats
+checkout-beats:
+	cd ${GOPATH}/src/github.com/elastic/beats && git checkout $(BEAT_CHECKOUT_TAG)
 
 # Copy beats into vendor directory
 .PHONY: copy-vendor
@@ -60,3 +65,9 @@ linux-x86_64-bin:
 linux-arm64-bin:
 	@mkdir -p $(BUILD_DIR)/linux-arm64/
 	GOOS=linux GOARCH=arm64 go build -i -o $(BUILD_DIR)/linux-arm64/sorabeat
+
+ci-setup:
+	go get -v -t -d ./...
+	make checkout-beats
+	make copy-vendor
+	sudo apt install python-virtualenv

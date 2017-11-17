@@ -19,12 +19,12 @@
           type: byte
           description: >-
             received bytes at sora server
-        - name: turn
-          type: group
-          description: >-
-            TURN
-          fields:
-            - name: total_received_allocate_request
-              type: long
-              description:
-                total_received_allocate_request
+        # - name: turn
+        #   type: group
+        #   description: >-
+        #     TURN
+        #   fields:
+        #     - name: total_received_allocate_request
+        #       type: long
+        #       description:
+        #         total_received_allocate_request

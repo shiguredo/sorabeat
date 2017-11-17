@@ -16,7 +16,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -26,51 +25,50 @@ import (
 )
 
 func main() {
-	buf, err1 := readSoraFields("util/sora_fields.yml")
-	if err1 != nil {
-		debugPrint(err1)
+	buf, readErr := readSoraFields("util/sora_fields.yml")
+	if readErr != nil {
+		debugPrint(readErr)
 		os.Exit(1)
 	}
 
-	res, err2 := processRootNodes(buf)
-	if err2 != nil {
-		debugPrint(err2)
+    processErr := processRootNodes(buf)
+	if processErr != nil {
+		debugPrint(processErr)
 		os.Exit(2)
 	}
-	debugPrint(res)
 
-	prefix := "sora.connections"
-	item := "rtp.total_received_bytes"
-	metricsType := "max"
-	formatter := "byte"
-	axis_min := int32(0)
-	{
-		splitMode := "everything"
-		derivative := false
-		termsField := ""
-		vres, reserr := visualizationJson(prefix, item,
-			splitMode, derivative, termsField,
-			metricsType, formatter, axis_min)
-		if reserr != nil {
-			debugPrint(reserr)
-			os.Exit(3)
-		}
-		print(vres)
-	}
+	// prefix := "sora.connections"
+	// item := "rtp.total_received_bytes"
+	// metricsType := "max"
+	// formatter := "byte"
+	// axis_min := int32(0)
+	// {
+	// 	splitMode := "everything"
+	// 	derivative := false
+	// 	termsField := ""
+	// 	vres, reserr := visualizationJson(prefix, item,
+	// 		splitMode, derivative, termsField,
+	// 		metricsType, formatter, axis_min)
+	// 	if reserr != nil {
+	// 		debugPrint(reserr)
+	// 		os.Exit(3)
+	// 	}
+	// 	print(vres)
+	// }
 
-	{
-		splitMode := "terms"
-		derivative := true
-		termsField := "sora.connections.channel_client_id"
-		vres, reserr := visualizationJson(prefix, item,
-			splitMode, derivative, termsField,
-			metricsType, formatter, axis_min)
-		if reserr != nil {
-			debugPrint(reserr)
-			os.Exit(3)
-		}
-		print(vres)
-	}
+	// {
+	// 	splitMode := "terms"
+	// 	derivative := true
+	// 	termsField := "sora.connections.channel_client_id"
+	// 	vres, reserr := visualizationJson(prefix, item,
+	// 		splitMode, derivative, termsField,
+	// 		metricsType, formatter, axis_min)
+	// 	if reserr != nil {
+	// 		debugPrint(reserr)
+	// 		os.Exit(3)
+	// 	}
+	// 	print(vres)
+	// }
 
 	debugPrint("SUCCEEDED!! ＼（＾ ＾）／")
 }
@@ -96,32 +94,44 @@ type Node struct {
 	Fields []Node `yaml:"fields,omitempty"`
 }
 
-func processRootNodes(buf []byte) (interface{}, error) {
+func processRootNodes(buf []byte) error {
 	var rootNodes []RootNode
 	err1 := yaml.Unmarshal(buf, &rootNodes)
 	if err1 != nil {
-		return nil, err1
+		return err1
 	}
+	visualizations := make([]map[string]interface{}, 0)
 	for _, rootNode := range rootNodes {
 		if rootNode.Key == "sora" {
-			processSoraNode(rootNode)
+			err := processSoraNode(rootNode, &visualizations)
+			if err != nil {
+				return err
+			}
 		}
 	}
-
-	if 1 == 1 {
-		return rootNodes, nil
-	} else {
-		return nil, errors.New("Dummy")
+	soraJson := jsonObj()
+	soraJson["objects"] = visualizations
+	soraJson["version"] = "1.0.2"
+	jsonBytes, marshalErr := json.Marshal(soraJson)
+	if marshalErr != nil {
+		return marshalErr
 	}
-
+	print(string(jsonBytes[:]))
+	return nil
 }
 
-func processSoraNode(sora RootNode) error {
+func processSoraNode(sora RootNode, visualizations *[]map[string]interface{}) error {
 	for _, node := range sora.Fields {
 		if node.Name == "connections" {
-			processConnectionsNode(node)
+			err := processConnectionsNode(node, visualizations)
+			if err != nil {
+				return err
+			}
 		} else if node.Name == "stats" {
-			processStatsNode(node)
+			err := processStatsNode(node, visualizations)
+			if err != nil {
+				return err
+			}
 		} else {
 			// nop
 		}
@@ -129,27 +139,32 @@ func processSoraNode(sora RootNode) error {
 	return nil
 }
 
-func processConnectionsNode(connections Node) error {
-	debugPrint(connections)
-	debugPrint(connections.Fields)
-
-	for _, f := range connections.Fields {
-		debugPrint("-------------------")
-		debugPrint(f)
-		debugPrint(f.Name)
-		debugPrint(f.Fields)
-		for _, f := range f.Fields {
-			debugPrint("===================")
-			debugPrint(f)
-			debugPrint(f.Name)
-			debugPrint(f.Fields)
+func processConnectionsNode(connections Node, visualizations *[]map[string]interface{}) error {
+	for _, field := range connections.Fields {
+		if field.Type != "byte" && field.Type != "long" {
+			continue
 		}
+		prefix := "sora.connections"
+		item := field.Name
+		metricsType := "max"
+		formatter := field.Type
+		axis_min := int32(0)
+		splitMode := "terms"
+		derivative := true
+		termsField := "sora.connections.channel_client_id"
+		visualization, err := visualizationJson(prefix, item,
+			splitMode, derivative, termsField,
+			metricsType, formatter, axis_min)
+		if err != nil {
+			return err
+		}
+		debugPrint(visualization)
+		*visualizations = append(*visualizations, visualization)
 	}
-
 	return nil
 }
 
-func processStatsNode(Node) error {
+func processStatsNode(Node, *[]map[string]interface{}) error {
 	// TODO: NYI
 	return nil
 }
@@ -201,6 +216,7 @@ func processStatsNode(Node) error {
 //   }  // end of _source
 // },
 
+// derivative 型の visState
 // {
 //     "title": "Sora total bytes",
 //     "type": "metrics",
@@ -312,7 +328,7 @@ func visualizationJson(
 	prefix string, item string,
 	splitMode string, derivative bool, termsField string,
 	metricsType string,
-	formatter string, axis_min int32) ([]byte, error) {
+	formatter string, axis_min int32) (map[string]interface{}, error) {
 	title := "[Sora] " + item
 	values := jsonObj()
 	{
@@ -399,21 +415,21 @@ func visualizationJson(
 		}
 		values["kibanaSavedObjectMeta"] = kibanaSavedObjectMeta
 	}
-	return json.Marshal(values)
+	return values, nil
 }
 
 func jsonObj() map[string]interface{} {
 	return make(map[string]interface{})
 }
 
-func print(arg []byte) {
+func print(arg interface{}) {
 	fmt.Printf("%s\n", arg)
 }
 
 func debugPrintf(format string, args ...interface{}) {
-	fmt.Printf(format + "\n", args)
+	fmt.Fprintf(os.Stderr, format + "\n", args)
 }
 
 func debugPrint(arg interface{}) {
-	fmt.Printf("%#v\n", arg)
+	fmt.Fprintf(os.Stderr, "%#v\n", arg)
 }

@@ -39,7 +39,14 @@ func main() {
 	}
 	debugPrint(res)
 
-	vres, reserr := visualizationJson()
+	prefix := "sora.connections"
+	item := "rtp.total_received_bytes"
+	splitMode := "everything"
+	metricsType := "max"
+	formatter := "byte"
+	var axis_min int32
+	axis_min = 0
+	vres, reserr := visualizationJson(prefix, item, splitMode, metricsType, formatter, axis_min)
 	if reserr != nil {
 		debugPrint(reserr)
 		os.Exit(3)
@@ -133,47 +140,122 @@ func processStatsNode(Node) error {
 //   "_type": "visualization",
 //   "_source": {
 //     "title": "Sora ongoing connections (TODO: host またぎ)",
-//     "visState": "{\"title\":\"Sora ongoing connections (TODO: host またぎ)\",
-//       \"type\":\"metrics\",
-//       \"params\":{\"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",
+//     "visState": "{
+//        \"title\":\"Sora ongoing connections (TODO: host またぎ)\",
+//        \"type\":\"metrics\",
+//        \"params\":{
+//           \"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",
 //           \"type\":\"timeseries\",
-//           \"series\":[{\"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",
-//           \"color\":\"#68BC00\",
-//           \"split_mode\":\"everything\",
-//           \"metrics\":[{\"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",
-//               \"type\":\"max\",
-//               \"field\":\"sora.stats.total_ongoing_connections\"}],
-//       \"seperate_axis\":0,
-//       \"axis_position\":\"right\",
-//       \"formatter\":\"number\",
-//       \"chart_type\":\"line\",
-//       \"line_width\":1,
-//       \"point_size\":1,
-//       \"fill\":0.5,
-//       \"stacked\":\"none\",
-//       \"label\":\"ongoing_connections\"}],
-//       \"time_field\":\"@timestamp\",
-//       \"index_pattern\":\"*\",
-//       \"interval\":\"auto\",
-//       \"axis_position\":\"left\",
-//       \"axis_formatter\":\"number\",
-//       \"show_legend\":1,
-//       \"show_grid\":1,
-//       \"axis_min\":\"0\"},
-//       \"aggs\":[]}",
+//           \"series\":[{
+//                  \"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",
+//                  \"color\":\"#68BC00\",
+//                  \"split_mode\":\"everything\",
+//                  \"metrics\":[{
+//                      \"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",
+//                      \"type\":\"max\",
+//                      \"field\":\"sora.stats.total_ongoing_connections\"}],
+//                  \"seperate_axis\":0,
+//                  \"axis_position\":\"right\",
+//                  \"formatter\":\"number\",
+//                  \"chart_type\":\"line\",
+//                  \"line_width\":1,
+//                  \"point_size\":1,
+//                  \"fill\":0.5,
+//                  \"stacked\":\"none\",
+//                  \"label\":\"ongoing_connections\"}], // end of series
+//        \"time_field\":\"@timestamp\",
+//        \"index_pattern\":\"*\",
+//        \"interval\":\"auto\",
+//        \"axis_position\":\"left\",
+//        \"axis_formatter\":\"number\",
+//        \"show_legend\":1,
+//        \"show_grid\":1,
+//        \"axis_min\":\"0\"},
+//        \"aggs\":[]}",  // end of visState
+//     // _source のフィールド
 //     "uiStateJSON": "{}",
 //     "description": "",
 //     "version": 1,
 //     "kibanaSavedObjectMeta": {
 //       "searchSourceJSON": "{}"
-//     }
-//   }
+//     } // end of kibanaSavedObjectMeta
+//   }  // end of _source
 // },
 
-func visualizationJson() ([]byte, error) {
-	values := make(map[string]interface{})
-	values["_id"] = uuid.NewV4()
+func visualizationJson(prefix string, item string, splitMode string, metricsType string,
+	formatter string, axis_min int32) ([]byte, error) {
+	values := jsonObj()
+	{
+		values["_id"] = uuid.NewV4()
+		values["_type"] = "visualization"
+		source := jsonObj()
+		{
+			source["title"] = "[Sora] " + item
+			visState := jsonObj()
+			{
+				visState["title"] = "[Sora] " + item
+				visState["type"] = "metrics"
+				idParams := uuid.NewV4()
+				params := jsonObj()
+				{
+					params["id"] = idParams
+					params["type"] = "timeseries"
+					var series [1]interface{}
+					series0 := jsonObj()
+					{
+						series0["id"] = idParams
+						series0["color"] = "#68BC00"
+						// TODO: term で split する場合
+						series0["split_mode"] = splitMode
+						metrics := jsonObj()
+						{
+							metrics["id"] = idParams
+							metrics["type"] = metricsType // e.g. "max"
+							metrics["field"] = prefix + item
+						}
+						series0["mrtrics"] = metrics
+						series0["seperate_axis"] = 0
+						series0["axis_position"] = "left"
+						series0["formatter"] = formatter
+						series0["chart_type"] = "line"
+						series0["line_width"] = 1
+						series0["point_size"] = 1
+						series0["fill"] = 0
+						series0["stacked"] = "none"
+						series0["label"] = item
+					}
+					series[0] = series0
+					params["series"] = series
+				}
+				visState["params"] = params
+				visState["time_field"] = "@timestamp"
+				visState["index_pattern"] = "*"
+				visState["interval"] = "auto"
+				visState["axis_position"] = "left"
+				visState["axis_formatter"] = formatter
+				visState["show_legend"] = 1
+				visState["show_grid"] = 1
+				visState["axis_min"] = axis_min
+				visState["aggs"] = []string{}
+			}
+			visStateBytes, _ := json.Marshal(visState)
+			source["visState"] = string(visStateBytes[:])
+		}
+		values["_source"] = source
+		values["uiStateJson"] = "{}"
+		values["description"] = "[Sora]" + item
+		values["version"] = 1
+		kibanaSavedObjectMeta := jsonObj()
+		{
+			kibanaSavedObjectMeta["searchSourceJSON"] = jsonObj()
+		}
+		values["kibanaSavedObjectMeta"] = kibanaSavedObjectMeta
+	}
 	return json.Marshal(values)
+}
+
+func jsonObj() map[string]interface{} {
+	return make(map[string]interface{})
 }
 
 func print(arg []byte) {

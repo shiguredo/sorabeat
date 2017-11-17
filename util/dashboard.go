@@ -26,17 +26,17 @@ import (
 func main() {
 	buf, err1 := readSoraFields("util/sora_fields.yml")
 	if err1 != nil {
-		fmt.Println(err1)
+		debugPrint(err1)
 		os.Exit(1)
 	}
 
-	res, err2 := processSoraFields(buf)
+	res, err2 := processRootNodes(buf)
 	if err2 != nil {
-		fmt.Println(err2)
+		debugPrint(err2)
 		os.Exit(2)
 	}
-	fmt.Println(res)
-	fmt.Println("SUCCEEDED!! ＼（＾ ＾）／")
+	debugPrint(res)
+	debugPrint("SUCCEEDED!! ＼（＾ ＾）／")
 }
 
 func readSoraFields(filePath string) ([]byte, error) {
@@ -53,38 +53,76 @@ type RootNode struct {
 }
 
 type Node struct {
-	name string
+	Name string
 	Title string
 	Type string
 	Description string
 	Fields []Node `yaml:"fields,omitempty"`
 }
 
-func processSoraFields(buf []byte) (interface{}, error) {
-	var contents []RootNode
-	err1 := yaml.Unmarshal(buf, &contents)
+func processRootNodes(buf []byte) (interface{}, error) {
+	var rootNodes []RootNode
+	err1 := yaml.Unmarshal(buf, &rootNodes)
 	if err1 != nil {
 		return nil, err1
 	}
-	fmt.Println(contents[0])
-	fmt.Printf("%#v\n", contents[0])
-	fmt.Println(contents[0].Key)
-
-	// if first, ok := contents[0].(map[string]interface{}); ok {
-	// 	if key1, ok := first["key"]; ok {
-	// 		fmt.Println("===========key1===========")
-	// 		fmt.Println(key1)
-	// 		fmt.Println("===========key1===========")
-	// 	} else {
-	// 		return nil, errors.New("Fail to fetch key 'key'")
-	// 	}
-	// } else {
-	// 	return nil, errors.New("Fail to type conversion")
-	// }
+	for _, rootNode := range rootNodes {
+		if rootNode.Key == "sora" {
+			processSoraNode(rootNode)
+		}
+	}
 
 	if 1 == 1 {
-		return contents, nil
+		return rootNodes, nil
 	} else {
 		return nil, errors.New("Dummy")
 	}
+
+}
+
+func processSoraNode(sora RootNode) error {
+	for _, node := range sora.Fields {
+		if node.Name == "connections" {
+			processConnectionsNode(node)
+		} else if node.Name == "stats" {
+			processStatsNode(node)
+		} else {
+			// nop
+		}
+	}
+	return nil
+}
+
+func processConnectionsNode(connections Node) error {
+	debugPrint(connections)
+	debugPrint(connections.Fields)
+
+	for _, f := range connections.Fields {
+		debugPrint("-------------------")
+		debugPrint(f)
+		debugPrint(f.Name)
+		debugPrint(f.Fields)
+		for _, f := range f.Fields {
+			debugPrint("===================")
+			debugPrint(f)
+			debugPrint(f.Name)
+			debugPrint(f.Fields)
+		}
+	}
+
+	return nil
+}
+
+func processStatsNode(Node) error {
+	// TODO: NYI
+	return nil
+}
+
+
+func debugPrintf(format string, args ...interface{}) {
+	fmt.Printf(format + "\n", args)
+}
+
+func debugPrint(arg interface{}) {
+	fmt.Println(arg)
 }

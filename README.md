@@ -99,15 +99,37 @@ Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
 
 # 以下、開発者向け
 
-## カスタム beat 開発
+## カスタム beat 開発の参考
 
-ref.
-- Creating a Beat based on Metricbeat | Metricbeat Reference [5.6] | Elastic
-  https://www.elastic.co/guide/en/beats/metricbeat/current/creating-beat-from-metricbeat.html
+- Beats 開発全般
+
+  - Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/index.html
+- Metricbeat をベースにしたカスタム beat 開発 (Sorabeat はコレ)
+
+  - Creating a Beat based on Metricbeat | Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/creating-beat-from-metricbeat.html
+
+- Beat や Beat module のための Kibana ダッシュボードを作る方法
+
+  - Creating New Kibana Dashboards for a Beat or a Beat module | Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/new-dashboards.html
+
+- 以下、Sorabeat には関係ないが、近隣なので参考まで
+
+  - Metricbeat のモジュールだけを新規で開発
+
+    - Creating a Metricbeat Module | Beats Developer Guide [master] | Elastic
+      https://www.elastic.co/guide/en/beats/devguide/current/creating-metricbeat-module.html
+
+  - イチからカスタム Beat を開発 (Sorabeat には関係ない、参考まで)
+
+    - Creating a New Beat | Beats Developer Guide [master] | Elastic
+      https://www.elastic.co/guide/en/beats/devguide/current/new-beat.html
 
 ### 準備
 
-- Go
+- Go 1.9.2
 - Python 2.7 (ノ￣￣∇￣￣)ノ‾‾‾━━┻━┻━━
 - virtualenv
 
@@ -120,6 +142,7 @@ git checkout v6.0.0-rc2
 python ${GOPATH}/src/github.com/elastic/beats/script/generate.py --type=metricbeat
 cd ${GOPATH}/src/github.com/shiguredo/sorabeat
 make setup
+## 対話形式で進むので入力
 ## module => sora
 ## metricset => connections
 ```
@@ -151,10 +174,12 @@ go build -i
 - sorabeat.reference.yml
 - modules.d/
 
+これらは最終的にパッケージに入るので、認証情報を入れないこと。
+
 *Tips*
 
-- 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める
-  例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
+- 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める。
+  複数も可能。例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
 
 生成
 
@@ -165,12 +190,20 @@ make update2
 *NOTE* 生成されるファイルが metricbeat となる(libbeat/metricbeat での抽象化不足?)バグのため、
 update target を update2 で少々上書きしている。以下に出てくる set_version2, package2 も同様。
 
+*TODO* ↑の issue を beats repogitory に切る
 
 ### 実行 (debug 用)
 
 ```
 ./sorabeat -c sorabeat.edited.yml -e -d "*"
 ```
+
+起動オプション
+
+| ログをファイルではなく stderr に出す | -e            |
+|--------------------------------------|---------------|
+| デバッグセレクタを有効にする         | -d <selector> |
+| セレクタはコード読むしかなさそう     |               |
 
 ### バージョン設定
 
@@ -220,88 +253,3 @@ git fetch
 git checkout v6.0.0 # バージョン指定すること
 make copy-vendor
 ```
-
----------------
-
-# 以下、生成された README そのまま
-
-sorabeat is a beat based on metricbeat which was generated with metricbeat/metricset generator.
-
-
-## Getting started
-
-To get started run the following command. This command should only be run once.
-
-```
-make setup
-```
-
-It will ask you for the module and metricset name. Insert the name accordingly.
-
-To compile your beat run `make`. Then you can run the following command to see the first output:
-
-```
-sorabeat -e -d "*"
-```
-
-In case further modules are metricsets should be added, run:
-
-```
-make create-metricset
-```
-
-After updates to the fields or config files, always run
-
-```
-make collect
-```
-
-This updates all fields and docs with the most recent changes.
-
-## Use vendoring
-
-We recommend to use vendoring for your beat. This means the dependencies are put into your beat folder. The beats team currently uses [govendor](https://github.com/kardianos/govendor) for vendoring.
-
-```
-govendor init
-govendor update +e
-```
-
-This will create a directory `vendor` inside your repository. To make sure all dependencies for the Makefile commands are loaded from the vendor directory, find the following line in your Makefile:
-
-```
-ES_BEATS=${GOPATH}/src/github.com/elastic/beats
-```
-
-Replace it with:
-```
-ES_BEATS=./vendor/github.com/elastic/beats
-```
-
-
-## Versioning
-
-We recommend to version your repository with git and make it available on Github so others can also use your project. The initialise the git repository and add the first commits, you can use the following commands:
-
-```
-git init
-git add README.md CONTRIBUTING.md
-git commit -m "Initial commit"
-git add LICENSE
-git commit -m "Add the LICENSE"
-git add .gitignore
-git commit -m "Add git settings"
-git add .
-git reset -- .travis.yml
-git commit -m "Add sorabeat"
-```
-
-## Packaging
-
-The beat frameworks provides tools to crosscompile and package your beat for different platforms. This requires [docker](https://www.docker.com/) and vendoring as described above. To build packages of your beat, run the following command:
-
-```
-make package
-```
-
-This will fetch and create all images required for the build process. The hole process to finish can take several minutes.

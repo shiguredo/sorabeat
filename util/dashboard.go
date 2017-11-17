@@ -41,17 +41,36 @@ func main() {
 
 	prefix := "sora.connections"
 	item := "rtp.total_received_bytes"
-	splitMode := "everything"
 	metricsType := "max"
 	formatter := "byte"
-	var axis_min int32
-	axis_min = 0
-	vres, reserr := visualizationJson(prefix, item, splitMode, metricsType, formatter, axis_min)
-	if reserr != nil {
-		debugPrint(reserr)
-		os.Exit(3)
+	axis_min := int32(0)
+	{
+		splitMode := "everything"
+		derivative := false
+		termsField := ""
+		vres, reserr := visualizationJson(prefix, item,
+			splitMode, derivative, termsField,
+			metricsType, formatter, axis_min)
+		if reserr != nil {
+			debugPrint(reserr)
+			os.Exit(3)
+		}
+		print(vres)
 	}
-	print(vres)
+
+	{
+		splitMode := "terms"
+		derivative := true
+		termsField := "sora.connections.channel_client_id"
+		vres, reserr := visualizationJson(prefix, item,
+			splitMode, derivative, termsField,
+			metricsType, formatter, axis_min)
+		if reserr != nil {
+			debugPrint(reserr)
+			os.Exit(3)
+		}
+		print(vres)
+	}
 
 	debugPrint("SUCCEEDED!! ＼（＾ ＾）／")
 }
@@ -182,36 +201,164 @@ func processStatsNode(Node) error {
 //   }  // end of _source
 // },
 
-func visualizationJson(prefix string, item string, splitMode string, metricsType string,
+// {
+//     "title": "Sora total bytes",
+//     "type": "metrics",
+//     "params": {
+//         "axis_formatter": "number",
+//         "axis_min": "0",
+//         "axis_position": "left",
+//         "background_color_rules": [
+//             {
+//                 "id": "00e5cb30-c371-11e7-9e32-ff5b8223c99f"
+//             }
+//         ],
+//         "bar_color_rules": [
+//             {
+//                 "id": "02da2120-c371-11e7-9e32-ff5b8223c99f"
+//             }
+//         ],
+//         "gauge_color_rules": [
+//             {
+//                 "id": "065676a0-c371-11e7-9e32-ff5b8223c99f"
+//             }
+//         ],
+//         "gauge_inner_width": 10,
+//         "gauge_style": "half",
+//         "gauge_width": 10,
+//         "id": "61ca57f0-469d-11e7-af02-69e470af7417",
+//         "ignore_global_filter": 0,
+//         "index_pattern": "*",
+//         "interval": "auto",
+//         "series": [
+//             {
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "e8f96550-bfaf-11e7-ba99-7dd83649120a",
+//                 "label": "sent",
+//                 "line_width": "2",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.connections.rtp.total_sent_bytes",
+//                         "id": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "field": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                         "id": "f6cf9230-bfaf-11e7-ba99-7dd83649120a",
+//                         "type": "derivative",
+//                         "unit": "1s"
+//                     }
+//                 ],
+//                 "point_size": "2",
+//                 "seperate_axis": 0,
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "sora.connections.channel_client_id",
+//                 "terms_order_by": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                 "terms_size": "10",
+//                 "value_template": "{{value}}/s"
+//             },
+//             {
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "61ca57f1-469d-11e7-af02-69e470af7417",
+//                 "label": "recieved",
+//                 "line_width": "2",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.connections.rtp.total_received_bytes",
+//                         "id": "61ca57f2-469d-11e7-af02-69e470af7417",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "field": "61ca57f2-469d-11e7-af02-69e470af7417",
+//                         "id": "b60bfb30-bfaf-11e7-ba99-7dd83649120a",
+//                         "type": "derivative",
+//                         "unit": "1s"
+//                     }
+//                 ],
+//                 "point_size": "2",
+//                 "seperate_axis": 0,
+//                 "split_filters": [
+//                     {
+//                         "color": "#68BC00",
+//                         "id": "074842f0-c36c-11e7-9cc7-5705c84b2ed3"
+//                     }
+//                 ],
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "sora.connections.channel_client_id",
+//                 "terms_order_by": "61ca57f2-469d-11e7-af02-69e470af7417",
+//                 "terms_size": "10",
+//                 "value_template": "{{value}}/s"
+//             }
+//         ],
+//         "show_grid": 1,
+//         "show_legend": 1,
+//         "time_field": "@timestamp",
+//         "type": "timeseries"
+//     }
+//     "aggs": []
+// }
+
+func visualizationJson(
+	prefix string, item string,
+	splitMode string, derivative bool, termsField string,
+	metricsType string,
 	formatter string, axis_min int32) ([]byte, error) {
+	title := "[Sora] " + item
 	values := jsonObj()
 	{
 		values["_id"] = uuid.NewV4()
 		values["_type"] = "visualization"
-		source := jsonObj()
 		{
-			source["title"] = "[Sora] " + item
-			visState := jsonObj()
+			source := jsonObj()
+			source["title"] = title
 			{
-				visState["title"] = "[Sora] " + item
+				visState := jsonObj()
+				visState["title"] = title
 				visState["type"] = "metrics"
-				idParams := uuid.NewV4()
-				params := jsonObj()
 				{
-					params["id"] = idParams
+					params := jsonObj()
+					params["id"] = uuid.NewV4()
 					params["type"] = "timeseries"
-					var series [1]interface{}
+					series := make([]map[string]interface{}, 0)
 					series0 := jsonObj()
 					{
-						series0["id"] = idParams
+						series0["id"] = uuid.NewV4()
 						series0["color"] = "#68BC00"
 						// TODO: term で split する場合
-						series0["split_mode"] = splitMode
-						metrics := jsonObj()
+						metrics := make([]map[string]interface{}, 0)
+						metrics0Id := uuid.NewV4()
 						{
-							metrics["id"] = idParams
-							metrics["type"] = metricsType // e.g. "max"
-							metrics["field"] = prefix + item
+							metrics0 := jsonObj()
+							metrics0["id"] = metrics0Id
+							metrics0["type"] = metricsType // e.g. "max"
+							metrics0["field"] = prefix + item
+							metrics = append(metrics, metrics0)
+						}
+						if derivative {
+							metrics1 := jsonObj()
+							metrics1["id"] = uuid.NewV4()
+							metrics1["type"] = "derivative"
+							metrics1["field"] = metrics0Id
+							metrics1["unit"] = "1s"
+							metrics = append(metrics, metrics1)
+						}
+
+						series0["split_mode"] = splitMode // "everything" or "terms"
+						if splitMode == "terms" {
+							series0["terms_field"] = termsField
+							series0["terms_order_by"] = metrics0Id
+							series0["terms_size"] = 20 // TODO: sufficient??
+							series0["value_template"] = "{{value}}/s"
 						}
 						series0["mrtrics"] = metrics
 						series0["seperate_axis"] = 0
@@ -224,26 +371,27 @@ func visualizationJson(prefix string, item string, splitMode string, metricsType
 						series0["stacked"] = "none"
 						series0["label"] = item
 					}
-					series[0] = series0
+					series = append(series, series0)
 					params["series"] = series
+					visState["params"] = params
 				}
-				visState["params"] = params
 				visState["time_field"] = "@timestamp"
 				visState["index_pattern"] = "*"
 				visState["interval"] = "auto"
 				visState["axis_position"] = "left"
-				visState["axis_formatter"] = formatter
+				visState["axis_formatter"] = "number"
 				visState["show_legend"] = 1
 				visState["show_grid"] = 1
 				visState["axis_min"] = axis_min
-				visState["aggs"] = []string{}
+				visState["aggs"] = make([]map[string]interface{}, 0)
+
+				visStateBytes, _ := json.Marshal(visState)
+				source["visState"] = string(visStateBytes[:])
 			}
-			visStateBytes, _ := json.Marshal(visState)
-			source["visState"] = string(visStateBytes[:])
+			values["_source"] = source
 		}
-		values["_source"] = source
 		values["uiStateJson"] = "{}"
-		values["description"] = "[Sora]" + item
+		values["description"] = title
 		values["version"] = 1
 		kibanaSavedObjectMeta := jsonObj()
 		{

@@ -16,6 +16,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -25,7 +26,10 @@ import (
 )
 
 func main() {
-	buf, readErr := readSoraFields("scripts/sora_fields.yml")
+	var input = flag.String("i", "scripts/sora_fields.yml", "Definitions of Sora fields")
+	flag.Parse()
+	debugPrintf("Input file: %s\n", *input)
+	buf, readErr := readSoraFields(input)
 	if readErr != nil {
 		debugPrint(readErr)
 		os.Exit(1)
@@ -40,8 +44,8 @@ func main() {
 	debugPrint("SUCCEEDED!! ＼（＾ ＾）／")
 }
 
-func readSoraFields(filePath string) ([]byte, error) {
-	data, err := ioutil.ReadFile(filePath)
+func readSoraFields(filePath *string) ([]byte, error) {
+	data, err := ioutil.ReadFile(*filePath)
 	return data, err
 }
 

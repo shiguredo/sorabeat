@@ -20,8 +20,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"gopkg.in/yaml.v2"
 	"github.com/satori/go.uuid"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -31,67 +31,34 @@ func main() {
 		os.Exit(1)
 	}
 
-    processErr := processRootNodes(buf)
+	processErr := processRootNodes(buf)
 	if processErr != nil {
 		debugPrint(processErr)
 		os.Exit(2)
 	}
 
-	// prefix := "sora.connections"
-	// item := "rtp.total_received_bytes"
-	// metricsType := "max"
-	// formatter := "byte"
-	// axis_min := int32(0)
-	// {
-	// 	splitMode := "everything"
-	// 	derivative := false
-	// 	termsField := ""
-	// 	vres, reserr := visualizationJson(prefix, item,
-	// 		splitMode, derivative, termsField,
-	// 		metricsType, formatter, axis_min)
-	// 	if reserr != nil {
-	// 		debugPrint(reserr)
-	// 		os.Exit(3)
-	// 	}
-	// 	print(vres)
-	// }
-
-	// {
-	// 	splitMode := "terms"
-	// 	derivative := true
-	// 	termsField := "sora.connections.channel_client_id"
-	// 	vres, reserr := visualizationJson(prefix, item,
-	// 		splitMode, derivative, termsField,
-	// 		metricsType, formatter, axis_min)
-	// 	if reserr != nil {
-	// 		debugPrint(reserr)
-	// 		os.Exit(3)
-	// 	}
-	// 	print(vres)
-	// }
-
 	debugPrint("SUCCEEDED!! ＼（＾ ＾）／")
 }
 
 func readSoraFields(filePath string) ([]byte, error) {
-    data, err := ioutil.ReadFile(filePath)
+	data, err := ioutil.ReadFile(filePath)
 	return data, err
 }
 
 type RootNode struct {
-	Key string
-	Title string
-	Type string
+	Key         string
+	Title       string
+	Type        string
 	Description string
-	Fields []Node `yaml:"fields,omitempty"`
+	Fields      []Node `yaml:"fields,omitempty"`
 }
 
 type Node struct {
-	Name string
-	Title string
-	Type string
+	Name        string
+	Title       string
+	Type        string
 	Description string
-	Fields []Node `yaml:"fields,omitempty"`
+	Fields      []Node `yaml:"fields,omitempty"`
 }
 
 func processRootNodes(buf []byte) error {
@@ -260,7 +227,6 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //     "title": "BEAM memory",
 //     "type": "metrics"
 // }
-
 
 // derivative 型の visState:
 // {
@@ -491,7 +457,7 @@ func print(arg interface{}) {
 }
 
 func debugPrintf(format string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, format + "\n", args)
+	fmt.Fprintf(os.Stderr, format+"\n", args)
 }
 
 func debugPrint(arg interface{}) {

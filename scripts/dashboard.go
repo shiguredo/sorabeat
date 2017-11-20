@@ -1,4 +1,4 @@
-// Copyright [yyyy] [name of copyright owner]
+// Copyright 2017 Shiguredo Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import (
 )
 
 func main() {
-	buf, readErr := readSoraFields("util/sora_fields.yml")
+	buf, readErr := readSoraFields("scripts/sora_fields.yml")
 	if readErr != nil {
 		debugPrint(readErr)
 		os.Exit(1)
@@ -78,7 +78,7 @@ func processRootNodes(buf []byte) error {
 	}
 	soraJson := jsonObj()
 	soraJson["objects"] = visualizations
-	soraJson["version"] = "1.0.2"
+	soraJson["version"] = "6.0.0"
 	jsonBytes, marshalErr := json.Marshal(soraJson)
 	if marshalErr != nil {
 		return marshalErr
@@ -114,14 +114,17 @@ func processConnectionsNode(connections Node, visualizations *[]map[string]inter
 		prefix := "sora.connections"
 		item := field.Name
 		metricsType := "max"
-		formatter := field.Type
-		axis_min := int32(0)
-		splitMode := "terms"
-		derivative := true
+		// formatter := field.Type
+		formatter := "number"
+		axisMin := "0"
+		// splitMode := "terms"
+		// derivative := true
+		splitMode := "everything"
+		derivative := false
 		termsField := "sora.connections.channel_client_id"
 		visualization, err := visualizationJson(prefix, item,
 			splitMode, derivative, termsField,
-			metricsType, formatter, axis_min)
+			metricsType, formatter, axisMin)
 		if err != nil {
 			return err
 		}
@@ -131,18 +134,39 @@ func processConnectionsNode(connections Node, visualizations *[]map[string]inter
 	return nil
 }
 
-func processStatsNode(Node, *[]map[string]interface{}) error {
-	// TODO: NYI
+func processStatsNode(stats Node, visualizations *[]map[string]interface{}) error {
+	for _, field := range stats.Fields {
+		if field.Type != "byte" && field.Type != "long" {
+			continue
+		}
+		prefix := "sora.stats"
+		item := field.Name
+		metricsType := "max"
+		// formatter := field.Type
+		formatter := "number"
+		axisMin := "0"
+		splitMode := "everything"
+		derivative := false
+		termsField := ""
+		visualization, err := visualizationJson(prefix, item,
+			splitMode, derivative, termsField,
+			metricsType, formatter, axisMin)
+		if err != nil {
+			return err
+		}
+		debugPrint(visualization)
+		*visualizations = append(*visualizations, visualization)
+	}
 	return nil
 }
 
 // visualization:
 //     {
-//       "id": "d0ec26d0-bea8-11e7-b277-79c0643bd2c8-3",
+//       "id": "92381420-c525-11e7-b277-79c0643bd2c8",
 //       "type": "visualization",
-//       "version": 1,
+//       "version": 2,
 //       "attributes": {
-//         "title": "3BEAM memory",
+//         "title": "Sora/BEAM active_tasks_all",
 //         "visState": "[下記参照:stringify された JSON]",
 //         "uiStateJSON": "{}",
 //         "description": "",
@@ -151,6 +175,7 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //           "searchSourceJSON": "{}"
 //         }
 //       }
+//     },
 
 // visState:
 // {
@@ -167,56 +192,21 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //                 "chart_type": "line",
 //                 "color": "#68BC00",
 //                 "fill": "0",
-//                 "formatter": "bytes",
+//                 "formatter": "number",
 //                 "id": "61ca57f1-469d-11e7-af02-69e470af7417",
-//                 "label": "beam_mem_total",
-//                 "line_width": "2",
+//                 "label": "max",
+//                 "line_width": 1,
 //                 "metrics": [
 //                     {
-//                         "field": "sora.stats.erlang_vm.memory.total",
+//                         "field": "sora.stats.erlang_vm.statistics.active_tasks_all_max",
 //                         "id": "61ca57f2-469d-11e7-af02-69e470af7417",
-//                         "type": "max"
-//                     },
-//                     {
-//                         "function": "sum",
-//                         "id": "5a9be470-c524-11e7-90ad-15a4935f7944",
-//                         "type": "series_agg"
+//                         "type": "avg"
 //                     }
 //                 ],
-//                 "point_size": "2",
+//                 "point_size": 1,
 //                 "seperate_axis": 0,
-//                 "split_mode": "terms",
-//                 "stacked": "none",
-//                 "terms_field": "beat.hostname",
-//                 "terms_size": "100"
-//             },
-//             {
-//                 "axis_position": "right",
-//                 "chart_type": "line",
-//                 "color": "#68BC00",
-//                 "fill": "0",
-//                 "formatter": "bytes",
-//                 "id": "b5f7f980-bea8-11e7-a725-b1c1e3e1f448",
-//                 "label": "beam_mem_binary",
-//                 "line_width": "2",
-//                 "metrics": [
-//                     {
-//                         "field": "sora.stats.erlang_vm.memory.binary",
-//                         "id": "b5f7f981-bea8-11e7-a725-b1c1e3e1f448",
-//                         "type": "max"
-//                     },
-//                     {
-//                         "function": "sum",
-//                         "id": "763e0500-c524-11e7-90ad-15a4935f7944",
-//                         "type": "series_agg"
-//                     }
-//                 ],
-//                 "point_size": "2",
-//                 "seperate_axis": 0,
-//                 "split_mode": "terms",
-//                 "stacked": "none",
-//                 "terms_field": "beat.hostname",
-//                 "terms_size": "100"
+//                 "split_mode": "everything",
+//                 "stacked": "none"
 //             }
 //         ],
 //         "show_grid": 1,
@@ -224,7 +214,7 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //         "time_field": "@timestamp",
 //         "type": "timeseries"
 //     },
-//     "title": "BEAM memory",
+//     "title": "Sora/BEAM active_tasks_all",
 //     "type": "metrics"
 // }
 
@@ -235,26 +225,60 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //         "axis_formatter": "number",
 //         "axis_min": "0",
 //         "axis_position": "left",
-//         "background_color_rules": [
-//             {
-//                 "id": "00e5cb30-c371-11e7-9e32-ff5b8223c99f"
-//             }
-//         ],
-//         "bar_color_rules": [
-//             {
-//                 "id": "02da2120-c371-11e7-9e32-ff5b8223c99f"
-//             }
-//         ],
-//         "gauge_color_rules": [
-//             {
-//                 "id": "065676a0-c371-11e7-9e32-ff5b8223c99f"
-//             }
-//         ],
-//         "gauge_inner_width": 10,
-//         "gauge_style": "half",
-//         "gauge_width": 10,
 //         "id": "61ca57f0-469d-11e7-af02-69e470af7417",
 //         "ignore_global_filter": 0,
+//         "index_pattern": "*",
+//         "interval": "auto",
+//         "series": [
+//             {
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "e8f96550-bfaf-11e7-ba99-7dd83649120a",
+//                 "label": "sent",
+//                 "line_width": "2",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.connections.rtp.total_sent_bytes",
+//                         "id": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "field": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                         "id": "f6cf9230-bfaf-11e7-ba99-7dd83649120a",
+//                         "type": "derivative",
+//                         "unit": "1s"
+//                     }
+//                 ],
+//                 "point_size": "2",
+//                 "seperate_axis": 0,
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "sora.connections.channel_client_id",
+//                 "terms_order_by": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                 "terms_size": "10",
+//                 "value_template": "{{value}}/s"
+//             }
+//         ],
+//         "show_grid": 1,
+//         "show_legend": 1,
+//         "time_field": "@timestamp",
+//         "type": "timeseries"
+//     },
+//     "title": "Sora total bytes",
+//     "type": "metrics"
+// }
+
+// derivative 型、かつ sum aggregation の visState (TODO: 未だ作ってない)
+// {
+//     "aggs": [],
+//     "params": {
+//         "axis_formatter": "number",
+//         "axis_min": "0",
+//         "axis_position": "left",
+//         "id": "61ca57f0-469d-11e7-af02-69e470af7417",
 //         "index_pattern": "*",
 //         "interval": "auto",
 //         "series": [
@@ -358,92 +382,101 @@ func visualizationJson(
 	prefix string, item string,
 	splitMode string, derivative bool, termsField string,
 	metricsType string,
-	formatter string, axis_min int32) (map[string]interface{}, error) {
-	title := "[Sora] " + item
+	formatter string, axis_min string) (map[string]interface{}, error) {
+	title := "1sora " + item
 	values := jsonObj()
 	{
-		values["_id"] = uuid.NewV4()
-		values["_type"] = "visualization"
+		values["id"] = "sorabeat-vis-" + prefix + "." + item
+		values["type"] = "visualization"
+		values["version"] = 1
 		{
-			source := jsonObj()
-			source["title"] = title
+			attrs := jsonObj()
+			attrs["title"] = title
 			{
 				visState := jsonObj()
-				visState["title"] = title
-				visState["type"] = "metrics"
+				visState["aggs"] = make([]map[string]interface{}, 0)
 				{
 					params := jsonObj()
+					params["axis_formatter"] = "number"
+					debugPrint(axis_min)
+					// params["axis_min"] = axis_min
+					params["axis_position"] = "left"
 					params["id"] = uuid.NewV4()
-					params["type"] = "timeseries"
-					series := make([]map[string]interface{}, 0)
-					series0 := jsonObj()
+					params["index_pattern"] = "*"
+					params["interval"] = "auto"
+
 					{
-						series0["id"] = uuid.NewV4()
+						series := make([]map[string]interface{}, 0)
+						series0 := jsonObj()
+
+						series0["axis_position"] = "right"
+						series0["chart_type"] = "line"
 						series0["color"] = "#68BC00"
-						// TODO: term で split する場合
-						metrics := make([]map[string]interface{}, 0)
+						series0["fill"] = "0"
+						series0["formatter"] = formatter // e.g. "number", "bytes"
+						series0["id"] = uuid.NewV4()
+						series0["label"] = item
+						series0["line_width"] = "2"
+
 						metrics0Id := uuid.NewV4()
 						{
+							metrics := make([]map[string]interface{}, 0)
 							metrics0 := jsonObj()
+							metrics0["field"] = prefix + "." + item
 							metrics0["id"] = metrics0Id
-							metrics0["type"] = metricsType // e.g. "max"
-							metrics0["field"] = prefix + item
+							metrics0["type"] = metricsType // e.g. "avg", "max"
 							metrics = append(metrics, metrics0)
+							if derivative {
+								metrics1 := jsonObj()
+								metrics1Id := uuid.NewV4()
+								metrics1["id"] = metrics1Id
+								metrics1["type"] = "derivative"
+								metrics1["field"] = metrics0Id
+								metrics1["unit"] = "1s"
+								metrics = append(metrics, metrics1)
+							}
+							series0["metrics"] = metrics
 						}
-						if derivative {
-							metrics1 := jsonObj()
-							metrics1["id"] = uuid.NewV4()
-							metrics1["type"] = "derivative"
-							metrics1["field"] = metrics0Id
-							metrics1["unit"] = "1s"
-							metrics = append(metrics, metrics1)
-						}
+
+						series0["point_size"] = "2"
+						series0["seperate_axis"] = 0
+						series0["stacked"] = "none"
 
 						series0["split_mode"] = splitMode // "everything" or "terms"
 						if splitMode == "terms" {
-							series0["terms_field"] = termsField
+							series0["terms_field"] = termsField // e.g. "sora.connections.channel_client_id"
 							series0["terms_order_by"] = metrics0Id
 							series0["terms_size"] = 20 // TODO: sufficient??
 							series0["value_template"] = "{{value}}/s"
 						}
-						series0["mrtrics"] = metrics
-						series0["seperate_axis"] = 0
-						series0["axis_position"] = "left"
-						series0["formatter"] = formatter
-						series0["chart_type"] = "line"
-						series0["line_width"] = 1
-						series0["point_size"] = 1
-						series0["fill"] = 0
-						series0["stacked"] = "none"
-						series0["label"] = item
+
+						series = append(series, series0)
+						params["series"] = series
 					}
-					series = append(series, series0)
-					params["series"] = series
+
+					params["show_grid"] = 1
+					params["show_legend"] = 1
+					params["time_field"] = "@timestamp"
+					params["type"] = "timeseries"
 					visState["params"] = params
 				}
-				visState["time_field"] = "@timestamp"
-				visState["index_pattern"] = "*"
-				visState["interval"] = "auto"
-				visState["axis_position"] = "left"
-				visState["axis_formatter"] = "number"
-				visState["show_legend"] = 1
-				visState["show_grid"] = 1
-				visState["axis_min"] = axis_min
-				visState["aggs"] = make([]map[string]interface{}, 0)
+				visState["title"] = title
+				visState["type"] = "metrics"
 
 				visStateBytes, _ := json.Marshal(visState)
-				source["visState"] = string(visStateBytes[:])
+				attrs["visState"] = string(visStateBytes[:])
 			}
-			values["_source"] = source
+
+			attrs["uiStateJSON"] = "{}"
+			attrs["description"] = ""
+			attrs["version"] = 1
+			{
+				kibanaSavedObjectMeta := jsonObj()
+				kibanaSavedObjectMeta["searchSourceJSON"] = "{}"
+				attrs["kibanaSavedObjectMeta"] = kibanaSavedObjectMeta
+			}
+			values["attributes"] = attrs
 		}
-		values["uiStateJson"] = "{}"
-		values["description"] = title
-		values["version"] = 1
-		kibanaSavedObjectMeta := jsonObj()
-		{
-			kibanaSavedObjectMeta["searchSourceJSON"] = jsonObj()
-		}
-		values["kibanaSavedObjectMeta"] = kibanaSavedObjectMeta
 	}
 	return values, nil
 }

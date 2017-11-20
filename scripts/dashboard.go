@@ -57,6 +57,7 @@ type Node struct {
 	Name        string
 	Title       string
 	Type        string
+	Cumulative  bool `yaml:"omitempty"`
 	Description string
 	Fields      []Node `yaml:"fields,omitempty"`
 }
@@ -108,19 +109,21 @@ func processSoraNode(sora RootNode, visualizations *[]map[string]interface{}) er
 
 func processConnectionsNode(connections Node, visualizations *[]map[string]interface{}) error {
 	for _, field := range connections.Fields {
-		if field.Type != "byte" && field.Type != "long" {
+		if field.Type != "bytes" && field.Type != "long" {
 			continue
 		}
-		prefix := "sora.connections"
+		prefix := "sora.connections."
 		item := field.Name
 		metricsType := "max"
-		// formatter := field.Type
-		formatter := "number"
+		var formatter string
+		if field.Type == "bytes" {
+			formatter = field.Type
+		} else {
+			formatter = "number"
+		}
 		axisMin := "0"
-		// splitMode := "terms"
-		// derivative := true
-		splitMode := "everything"
-		derivative := false
+		splitMode := "terms"
+		derivative := true
 		termsField := "sora.connections.channel_client_id"
 		visualization, err := visualizationJson(prefix, item,
 			splitMode, derivative, termsField,
@@ -136,14 +139,18 @@ func processConnectionsNode(connections Node, visualizations *[]map[string]inter
 
 func processStatsNode(stats Node, visualizations *[]map[string]interface{}) error {
 	for _, field := range stats.Fields {
-		if field.Type != "byte" && field.Type != "long" {
+		if field.Type != "bytes" && field.Type != "long" {
 			continue
 		}
-		prefix := "sora.stats"
+		prefix := "sora.stats."
 		item := field.Name
 		metricsType := "max"
-		// formatter := field.Type
-		formatter := "number"
+		var formatter string
+		if field.Type == "bytes" {
+			formatter = field.Type
+		} else {
+			formatter = "number"
+		}
 		axisMin := "0"
 		splitMode := "everything"
 		derivative := false
@@ -382,11 +389,11 @@ func visualizationJson(
 	prefix string, item string,
 	splitMode string, derivative bool, termsField string,
 	metricsType string,
-	formatter string, axis_min string) (map[string]interface{}, error) {
+	formatter string, axisMin string) (map[string]interface{}, error) {
 	title := "1sora " + item
 	values := jsonObj()
 	{
-		values["id"] = "sorabeat-vis-" + prefix + "." + item
+		values["id"] = "sorabeat-vis-" + prefix + item
 		values["type"] = "visualization"
 		values["version"] = 1
 		{
@@ -398,8 +405,7 @@ func visualizationJson(
 				{
 					params := jsonObj()
 					params["axis_formatter"] = "number"
-					debugPrint(axis_min)
-					// params["axis_min"] = axis_min
+					params["axis_min"] = axisMin
 					params["axis_position"] = "left"
 					params["id"] = uuid.NewV4()
 					params["index_pattern"] = "*"
@@ -422,7 +428,7 @@ func visualizationJson(
 						{
 							metrics := make([]map[string]interface{}, 0)
 							metrics0 := jsonObj()
-							metrics0["field"] = prefix + "." + item
+							metrics0["field"] = prefix + item
 							metrics0["id"] = metrics0Id
 							metrics0["type"] = metricsType // e.g. "avg", "max"
 							metrics = append(metrics, metrics0)

@@ -169,57 +169,102 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 	return nil
 }
 
-// {
-//   "_id": "a3c0a2d0-c4f2-11e7-b277-79c0643bd2c8",
-//   "_type": "visualization",
-//   "_source": {
-//     "title": "Sora ongoing connections (TODO: host またぎ)",
-//     "visState": "{
-//        \"title\":\"Sora ongoing connections (TODO: host またぎ)\",
-//        \"type\":\"metrics\",
-//        \"params\":{
-//           \"id\":\"61ca57f0-469d-11e7-af02-69e470af7417\",
-//           \"type\":\"timeseries\",
-//           \"series\":[{
-//                  \"id\":\"61ca57f1-469d-11e7-af02-69e470af7417\",
-//                  \"color\":\"#68BC00\",
-//                  \"split_mode\":\"everything\",
-//                  \"metrics\":[{
-//                      \"id\":\"61ca57f2-469d-11e7-af02-69e470af7417\",
-//                      \"type\":\"max\",
-//                      \"field\":\"sora.stats.total_ongoing_connections\"}],
-//                  \"seperate_axis\":0,
-//                  \"axis_position\":\"right\",
-//                  \"formatter\":\"number\",
-//                  \"chart_type\":\"line\",
-//                  \"line_width\":1,
-//                  \"point_size\":1,
-//                  \"fill\":0.5,
-//                  \"stacked\":\"none\",
-//                  \"label\":\"ongoing_connections\"}], // end of series
-//        \"time_field\":\"@timestamp\",
-//        \"index_pattern\":\"*\",
-//        \"interval\":\"auto\",
-//        \"axis_position\":\"left\",
-//        \"axis_formatter\":\"number\",
-//        \"show_legend\":1,
-//        \"show_grid\":1,
-//        \"axis_min\":\"0\"},
-//        \"aggs\":[]}",  // end of visState
-//     // _source のフィールド
-//     "uiStateJSON": "{}",
-//     "description": "",
-//     "version": 1,
-//     "kibanaSavedObjectMeta": {
-//       "searchSourceJSON": "{}"
-//     } // end of kibanaSavedObjectMeta
-//   }  // end of _source
-// },
+// visualization:
+//     {
+//       "id": "d0ec26d0-bea8-11e7-b277-79c0643bd2c8-3",
+//       "type": "visualization",
+//       "version": 1,
+//       "attributes": {
+//         "title": "3BEAM memory",
+//         "visState": "[下記参照:stringify された JSON]",
+//         "uiStateJSON": "{}",
+//         "description": "",
+//         "version": 1,
+//         "kibanaSavedObjectMeta": {
+//           "searchSourceJSON": "{}"
+//         }
+//       }
 
-// derivative 型の visState
+// visState:
 // {
-//     "title": "Sora total bytes",
-//     "type": "metrics",
+//     "aggs": [],
+//     "params": {
+//         "axis_formatter": "number",
+//         "axis_position": "left",
+//         "id": "61ca57f0-469d-11e7-af02-69e470af7417",
+//         "index_pattern": "*",
+//         "interval": "auto",
+//         "series": [
+//             {
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "61ca57f1-469d-11e7-af02-69e470af7417",
+//                 "label": "beam_mem_total",
+//                 "line_width": "2",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.stats.erlang_vm.memory.total",
+//                         "id": "61ca57f2-469d-11e7-af02-69e470af7417",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "function": "sum",
+//                         "id": "5a9be470-c524-11e7-90ad-15a4935f7944",
+//                         "type": "series_agg"
+//                     }
+//                 ],
+//                 "point_size": "2",
+//                 "seperate_axis": 0,
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "beat.hostname",
+//                 "terms_size": "100"
+//             },
+//             {
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "b5f7f980-bea8-11e7-a725-b1c1e3e1f448",
+//                 "label": "beam_mem_binary",
+//                 "line_width": "2",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.stats.erlang_vm.memory.binary",
+//                         "id": "b5f7f981-bea8-11e7-a725-b1c1e3e1f448",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "function": "sum",
+//                         "id": "763e0500-c524-11e7-90ad-15a4935f7944",
+//                         "type": "series_agg"
+//                     }
+//                 ],
+//                 "point_size": "2",
+//                 "seperate_axis": 0,
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "beat.hostname",
+//                 "terms_size": "100"
+//             }
+//         ],
+//         "show_grid": 1,
+//         "show_legend": 1,
+//         "time_field": "@timestamp",
+//         "type": "timeseries"
+//     },
+//     "title": "BEAM memory",
+//     "type": "metrics"
+// }
+
+
+// derivative 型の visState:
+// {
+//     "aggs": [],
 //     "params": {
 //         "axis_formatter": "number",
 //         "axis_min": "0",
@@ -248,59 +293,34 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //         "interval": "auto",
 //         "series": [
 //             {
+//                 "axis_min": "0",
 //                 "axis_position": "right",
 //                 "chart_type": "line",
 //                 "color": "#68BC00",
 //                 "fill": "0",
 //                 "formatter": "bytes",
-//                 "id": "e8f96550-bfaf-11e7-ba99-7dd83649120a",
-//                 "label": "sent",
-//                 "line_width": "2",
+//                 "id": "a9b0f6f0-c370-11e7-9e32-ff5b8223c99f",
+//                 "label": "sent (sum)",
+//                 "line_width": "3",
 //                 "metrics": [
 //                     {
 //                         "field": "sora.connections.rtp.total_sent_bytes",
-//                         "id": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
+//                         "id": "a9b0f6f1-c370-11e7-9e32-ff5b8223c99f",
 //                         "type": "max"
 //                     },
 //                     {
-//                         "field": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
-//                         "id": "f6cf9230-bfaf-11e7-ba99-7dd83649120a",
+//                         "field": "a9b0f6f1-c370-11e7-9e32-ff5b8223c99f",
+//                         "id": "a9b0f6f2-c370-11e7-9e32-ff5b8223c99f",
 //                         "type": "derivative",
 //                         "unit": "1s"
-//                     }
-//                 ],
-//                 "point_size": "2",
-//                 "seperate_axis": 0,
-//                 "split_mode": "terms",
-//                 "stacked": "none",
-//                 "terms_field": "sora.connections.channel_client_id",
-//                 "terms_order_by": "e8f96551-bfaf-11e7-ba99-7dd83649120a",
-//                 "terms_size": "10",
-//                 "value_template": "{{value}}/s"
-//             },
-//             {
-//                 "axis_position": "right",
-//                 "chart_type": "line",
-//                 "color": "#68BC00",
-//                 "fill": "0",
-//                 "formatter": "bytes",
-//                 "id": "61ca57f1-469d-11e7-af02-69e470af7417",
-//                 "label": "recieved",
-//                 "line_width": "2",
-//                 "metrics": [
-//                     {
-//                         "field": "sora.connections.rtp.total_received_bytes",
-//                         "id": "61ca57f2-469d-11e7-af02-69e470af7417",
-//                         "type": "max"
 //                     },
 //                     {
-//                         "field": "61ca57f2-469d-11e7-af02-69e470af7417",
-//                         "id": "b60bfb30-bfaf-11e7-ba99-7dd83649120a",
-//                         "type": "derivative",
-//                         "unit": "1s"
+//                         "function": "sum",
+//                         "id": "a9b0f6f3-c370-11e7-9e32-ff5b8223c99f",
+//                         "type": "series_agg"
 //                     }
 //                 ],
-//                 "point_size": "2",
+//                 "point_size": "4",
 //                 "seperate_axis": 0,
 //                 "split_filters": [
 //                     {
@@ -311,8 +331,51 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //                 "split_mode": "terms",
 //                 "stacked": "none",
 //                 "terms_field": "sora.connections.channel_client_id",
-//                 "terms_order_by": "61ca57f2-469d-11e7-af02-69e470af7417",
-//                 "terms_size": "10",
+//                 "terms_order_by": "a9b0f6f1-c370-11e7-9e32-ff5b8223c99f",
+//                 "terms_size": "1000",
+//                 "value_template": "{{value}}/s"
+//             },
+//             {
+//                 "axis_min": "0",
+//                 "axis_position": "right",
+//                 "chart_type": "line",
+//                 "color": "#68BC00",
+//                 "fill": "0",
+//                 "formatter": "bytes",
+//                 "id": "55703560-c370-11e7-9e32-ff5b8223c99f",
+//                 "label": "recieved (sum)",
+//                 "line_width": "3",
+//                 "metrics": [
+//                     {
+//                         "field": "sora.connections.rtp.total_received_bytes",
+//                         "id": "55703561-c370-11e7-9e32-ff5b8223c99f",
+//                         "type": "max"
+//                     },
+//                     {
+//                         "field": "55703561-c370-11e7-9e32-ff5b8223c99f",
+//                         "id": "55705c70-c370-11e7-9e32-ff5b8223c99f",
+//                         "type": "derivative",
+//                         "unit": "1s"
+//                     },
+//                     {
+//                         "function": "sum",
+//                         "id": "5bb8f150-c370-11e7-9e32-ff5b8223c99f",
+//                         "type": "series_agg"
+//                     }
+//                 ],
+//                 "point_size": "4",
+//                 "seperate_axis": 0,
+//                 "split_filters": [
+//                     {
+//                         "color": "#68BC00",
+//                         "id": "074842f0-c36c-11e7-9cc7-5705c84b2ed3"
+//                     }
+//                 ],
+//                 "split_mode": "terms",
+//                 "stacked": "none",
+//                 "terms_field": "sora.connections.channel_client_id",
+//                 "terms_order_by": "55703561-c370-11e7-9e32-ff5b8223c99f",
+//                 "terms_size": "1000",
 //                 "value_template": "{{value}}/s"
 //             }
 //         ],
@@ -320,8 +383,9 @@ func processStatsNode(Node, *[]map[string]interface{}) error {
 //         "show_legend": 1,
 //         "time_field": "@timestamp",
 //         "type": "timeseries"
-//     }
-//     "aggs": []
+//     },
+//     "title": "Sora total bytes (aggregated/sum)",
+//     "type": "metrics"
 // }
 
 func visualizationJson(

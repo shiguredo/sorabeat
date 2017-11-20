@@ -1,0 +1,616 @@
+- key: sora
+  title: sora
+  type: group
+  # YAML Tips
+  # >- : trailing spaces => keep, single new line => nothing,
+  #      double newline => newline
+  description: >-
+    Some value 1
+  fields:
+
+    - name: connections
+      type: group
+      description: >-
+        connection specific information
+      fields:
+        - name: channel_id
+          type: keyword
+          description: >-
+            channel ID
+        - name: client_id
+          type: keyword
+          description: >-
+            client ID
+        - name: timestamp
+          type: date
+          descrition: >-
+            timestamp
+
+        - name: rtp.total_received_bytes
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_received_bytes
+        - name: rtp.total_received_packets
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_packets
+        - name: rtp.total_received_rtcp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp
+        - name: rtp.total_received_rtcp_bye
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_bye
+        - name: rtp.total_received_rtcp_psfb_afb
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_afb
+        - name: rtp.total_received_rtcp_psfb_fir
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_fir
+        - name: rtp.total_received_rtcp_psfb_pli
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_pli
+        - name: rtp.total_received_rtcp_rr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rr
+        - name: rtp.total_received_rtcp_rtpfb_generic_nack
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_generic_nack
+        - name: rtp.total_received_rtcp_rtpfb_tmmbn
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_tmmbn
+        - name: rtp.total_received_rtcp_rtpfb_tmmbr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_tmmbr
+        - name: rtp.total_received_rtcp_rtpfb_transport_wide
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_transport_wide
+        - name: rtp.total_received_rtcp_sdes
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_sdes
+        - name: rtp.total_received_rtcp_sr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_sr
+        - name: rtp.total_received_rtcp_unknown
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_unknown
+        - name: rtp.total_received_rtcp_xr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_xr
+        - name: rtp.total_received_rtp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtp
+        - name: rtp.total_sent_bytes
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_sent_bytes
+        - name: rtp.total_sent_packets
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_packets
+        - name: rtp.total_sent_rtcp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp
+        - name: rtp.total_sent_rtcp_bye
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_bye
+        - name: rtp.total_sent_rtcp_psfb_afb
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_afb
+        - name: rtp.total_sent_rtcp_psfb_fir
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_fir
+        - name: rtp.total_sent_rtcp_psfb_pli
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_pli
+        - name: rtp.total_sent_rtcp_rr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rr
+        - name: rtp.total_sent_rtcp_rtpfb_generic_nack
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_generic_nack
+        - name: rtp.total_sent_rtcp_rtpfb_tmmbn
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_tmmbn
+        - name: rtp.total_sent_rtcp_rtpfb_tmmbr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_tmmbr
+        - name: rtp.total_sent_rtcp_rtpfb_transport_wide
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_transport_wide
+        - name: rtp.total_sent_rtcp_sdes
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_sdes
+        - name: rtp.total_sent_rtcp_sr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_sr
+        - name: rtp.total_sent_rtcp_unknown
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_unknown
+        - name: rtp.total_sent_rtcp_xr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_xr
+        - name: rtp.total_sent_rtp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtp
+
+        - name: turn.total_received_allocate_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_allocate_request
+        - name: turn.total_received_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_binding_request
+        - name: turn.total_received_channel_bind_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_channel_bind_request
+        - name: turn.total_received_channel_data
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_channel_data
+        - name: turn.total_received_create_permission_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_create_permission_request
+        - name: turn.total_received_refresh_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_refresh_request
+        - name: turn.total_received_send_indication
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_send_indication
+        - name: turn.total_received_turn_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_error
+        - name: turn.total_received_turn_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_request
+        - name: turn.total_received_turn_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_success
+        - name: turn.total_sent_allocate_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_allocate_error
+        - name: turn.total_sent_allocate_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_allocate_success
+        - name: turn.total_sent_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_binding_error
+        - name: turn.total_sent_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_binding_success
+        - name: turn.total_sent_channel_bind_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_bind_error
+        - name: turn.total_sent_channel_bind_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_bind_success
+        - name: turn.total_sent_channel_data
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_data
+        - name: turn.total_sent_create_permission_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_create_permission_error
+        - name: turn.total_sent_create_permission_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_create_permission_success
+        - name: turn.total_sent_data_indication
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_data_indication
+        - name: turn.total_sent_refresh_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_refresh_error
+        - name: turn.total_sent_refresh_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_refresh_success
+        - name: turn.total_sent_turn_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_error
+        - name: turn.total_sent_turn_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_request
+        - name: turn.total_sent_turn_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_success
+
+    - name: stats
+      type: group
+      description: >-
+        connection specific information
+      fields:
+        - name: average_duration_sec
+          type: long
+          description: >-
+            average_duration_sec
+        - name: average_setup_time_msec
+          type: long
+          description: >-
+            average_setup_time_msec
+
+        - name: total_ongoing_connections
+          type: long
+          description: >-
+            total_ongoing_connections
+        - name: total_failed_connections
+          type: long
+          cumulative: True
+          description: >-
+            total_failed_connections
+        - name: total_successful_connections
+          type: long
+          cumulative: True
+          description: >-
+            total_successful_connections
+        - name: total_duration_sec
+          type: long
+          cumulative: True
+          description: >-
+            total_duration_sec
+
+        - name: error.sdp_generation_error
+          type: long
+          cumulative: True
+          description: >-
+            error.sdp_generation_error
+        - name: error.signaling_error
+          type: long
+          cumulative: True
+          description: >-
+            error.signaling_error
+
+        - name: browser.total_failed_browser_type.chrome
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.chrome
+        - name: browser.total_failed_browser_type.edge
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.edge
+        - name: browser.total_failed_browser_type.firefox
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.firefox
+        - name: browser.total_failed_browser_type.safari
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.safari
+        - name: browser.total_failed_browser_type.unknown
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.unknown
+
+        - name: erlang_vm.memory.atom
+          type: long
+          description: >-
+            erlang_vm.memory.atom
+        - name: erlang_vm.memory.atom_used
+          type: long
+          description: >-
+            erlang_vm.memory.atom_used
+        - name: erlang_vm.memory.binary
+          type: long
+          description: >-
+            erlang_vm.memory.binary
+        - name: erlang_vm.memory.code
+          type: long
+          description: >-
+            erlang_vm.memory.code
+        - name: erlang_vm.memory.ets
+          type: long
+          description: >-
+            erlang_vm.memory.ets
+        - name: erlang_vm.memory.processes
+          type: long
+          description: >-
+            erlang_vm.memory.processes
+        - name: erlang_vm.memory.processes_used
+          type: long
+          description: >-
+            erlang_vm.memory.processes_used
+        - name: erlang_vm.memory.system
+          type: long
+          description: >-
+            erlang_vm.memory.system
+        - name: erlang_vm.memory.total
+          type: long
+          description: >-
+            erlang_vm.memory.total
+
+        - name: erlang_vm.statistics.run_queue
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue
+        - name: erlang_vm.statistics.context_switches
+          type: long
+          description: >-
+            erlang_vm.statistics.context_switches
+        - name: erlang_vm.statistics.total_active_tasks
+          type: long
+          description: >-
+            erlang_vm.statistics.total_active_tasks
+        - name: erlang_vm.statistics.total_active_tasks_all
+          type: long
+          description: >-
+            erlang_vm.statistics.total_active_tasks_all
+        - name: erlang_vm.statistics.total_run_queue_lengths
+          type: long
+          description: >-
+            erlang_vm.statistics.total_run_queue_lengths
+        - name: erlang_vm.statistics.total_run_queue_lengths_all
+          type: long
+          description: >-
+            erlang_vm.statistics.total_run_queue_lengths_all
+
+        - name: erlang_vm.statistics.active_tasks
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks
+        - name: erlang_vm.statistics.active_tasks_max
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_max
+        - name: erlang_vm.statistics.active_tasks_min
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_min
+        - name: erlang_vm.statistics.active_tasks_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_mean
+        - name: erlang_vm.statistics.active_tasks_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_stddev
+        - name: erlang_vm.statistics.active_tasks_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_imbalance
+
+        - name: erlang_vm.statistics.active_tasks_all
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all
+        - name: erlang_vm.statistics.active_tasks_all_max
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_max
+        - name: erlang_vm.statistics.active_tasks_all_min
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_min
+        - name: erlang_vm.statistics.active_tasks_all_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_mean
+        - name: erlang_vm.statistics.active_tasks_all_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_stddev
+        - name: erlang_vm.statistics.active_tasks_all_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_imbalance
+
+        - name: erlang_vm.statistics.run_queue_lengths
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths
+        - name: erlang_vm.statistics.run_queue_lengths_max
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_max
+        - name: erlang_vm.statistics.run_queue_lengths_min
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_min
+        - name: erlang_vm.statistics.run_queue_lengths_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_mean
+        - name: erlang_vm.statistics.run_queue_lengths_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_stddev
+        - name: erlang_vm.statistics.run_queue_lengths_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_imbalance
+
+        - name: erlang_vm.statistics.run_queue_lengths_all
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all
+        - name: erlang_vm.statistics.run_queue_lengths_all_max
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_max
+        - name: erlang_vm.statistics.run_queue_lengths_all_min
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_min
+        - name: erlang_vm.statistics.run_queue_lengths_all_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_mean
+        - name: erlang_vm.statistics.run_queue_lengths_all_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_stddev
+        - name: erlang_vm.statistics.run_queue_lengths_all_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_imbalance
+
+        - name: erlang_vm.statistics.reductions.reductions_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.reductions.reductions_since_last_call
+        - name: erlang_vm.statistics.reductions.total_reductions
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.reductions.total_reductions
+
+        - name: erlang_vm.statistics.exact_reductions.exact_reductions_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.exact_reductions.exact_reductions_since_last_call
+        - name: erlang_vm.statistics.exact_reductions.total_exact_reductions
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.exact_reductions.total_exact_reductions
+
+        - name: erlang_vm.statistics.garbage_collection.number_of_gcs
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.garbage_collection.number_of_gcs
+        - name: erlang_vm.statistics.garbage_collection.words_reclaimed
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.garbage_collection.words_reclaimed
+
+        - name: erlang_vm.statistics.io.input
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.io.input
+        - name: erlang_vm.statistics.io.output
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.io.output
+
+        - name: erlang_vm.statistics.runtime.time_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.runtime.time_since_last_call
+        - name: erlang_vm.statistics.runtime.total_run_time
+          type: long
+          description: >-
+            erlang_vm.statistics.runtime.total_run_time
+        - name: erlang_vm.statistics.wall_clock.wallclock_time_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.wall_clock.wallclock_time_since_last_call
+        - name: erlang_vm.statistics.wall_clock.total_wallclock_time
+          type: long
+          description: >-
+            erlang_vm.statistics.wall_clock.total_wallclock_time

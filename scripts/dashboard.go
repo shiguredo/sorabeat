@@ -57,7 +57,7 @@ type Node struct {
 	Name        string
 	Title       string
 	Type        string
-	Cumulative  bool `yaml:"omitempty"`
+	Cumulative  bool `yaml:"cumulative,omitempty"`
 	Description string
 	Fields      []Node `yaml:"fields,omitempty"`
 }
@@ -77,14 +77,14 @@ func processRootNodes(buf []byte) error {
 			}
 		}
 	}
-	soraJson := jsonObj()
-	soraJson["objects"] = visualizations
-	soraJson["version"] = "6.0.0"
-	jsonBytes, marshalErr := json.Marshal(soraJson)
+	vis1Json := jsonObj()
+	vis1Json["objects"] = visualizations
+	vis1Json["version"] = "1.0.0"
+	vis1JsonBytes, marshalErr := json.Marshal(vis1Json)
 	if marshalErr != nil {
 		return marshalErr
 	}
-	print(string(jsonBytes[:]))
+	print(string(vis1JsonBytes[:]))
 	return nil
 }
 
@@ -109,62 +109,59 @@ func processSoraNode(sora RootNode, visualizations *[]map[string]interface{}) er
 
 func processConnectionsNode(connections Node, visualizations *[]map[string]interface{}) error {
 	for _, field := range connections.Fields {
-		if field.Type != "bytes" && field.Type != "long" {
-			continue
-		}
 		prefix := "sora.connections."
-		item := field.Name
-		metricsType := "max"
-		var formatter string
-		if field.Type == "bytes" {
-			formatter = field.Type
-		} else {
-			formatter = "number"
-		}
-		axisMin := "0"
 		splitMode := "terms"
-		derivative := true
 		termsField := "sora.connections.channel_client_id"
-		visualization, err := visualizationJson(prefix, item,
-			splitMode, derivative, termsField,
-			metricsType, formatter, axisMin)
+		visualization, err := processField(prefix, field, splitMode, termsField)
 		if err != nil {
 			return err
 		}
-		debugPrint(visualization)
-		*visualizations = append(*visualizations, visualization)
+		// debugPrint(visualization)
+		if visualization != nil {
+			*visualizations = append(*visualizations, visualization)
+		}
 	}
 	return nil
 }
 
 func processStatsNode(stats Node, visualizations *[]map[string]interface{}) error {
 	for _, field := range stats.Fields {
-		if field.Type != "bytes" && field.Type != "long" {
-			continue
-		}
 		prefix := "sora.stats."
-		item := field.Name
-		metricsType := "max"
-		var formatter string
-		if field.Type == "bytes" {
-			formatter = field.Type
-		} else {
-			formatter = "number"
-		}
-		axisMin := "0"
 		splitMode := "everything"
-		derivative := false
 		termsField := ""
-		visualization, err := visualizationJson(prefix, item,
-			splitMode, derivative, termsField,
-			metricsType, formatter, axisMin)
+		visualization, err := processField(prefix, field, splitMode, termsField)
 		if err != nil {
 			return err
 		}
-		debugPrint(visualization)
-		*visualizations = append(*visualizations, visualization)
+		// debugPrint(visualization)
+		if visualization != nil {
+			*visualizations = append(*visualizations, visualization)
+		}
 	}
 	return nil
+}
+
+func processField(prefix string, field Node, splitMode string,
+	termsField string) (map[string]interface{}, error) {
+
+	if field.Type != "bytes" && field.Type != "long" {
+		return nil, nil
+	}
+
+	item := field.Name
+	metricsType := "max"
+	var formatter string
+	if field.Type == "bytes" {
+		formatter = field.Type
+	} else {
+		formatter = "number"
+	}
+	axisMin := "0"
+	derivative := field.Cumulative
+	visualization, err := visualizationJson("sorabeat-vis1-", prefix, item,
+		splitMode, derivative, termsField,
+		metricsType, formatter, axisMin)
+	return visualization, err
 }
 
 // visualization:
@@ -386,14 +383,15 @@ func processStatsNode(stats Node, visualizations *[]map[string]interface{}) erro
 // }
 
 func visualizationJson(
+	idPrefix string,
 	prefix string, item string,
 	splitMode string, derivative bool, termsField string,
 	metricsType string,
 	formatter string, axisMin string) (map[string]interface{}, error) {
-	title := "1sora " + item
+	title := item + " [Sorabeat]"
 	values := jsonObj()
 	{
-		values["id"] = "sorabeat-vis-" + prefix + item
+		values["id"] = idPrefix + prefix + item
 		values["type"] = "visualization"
 		values["version"] = 1
 		{

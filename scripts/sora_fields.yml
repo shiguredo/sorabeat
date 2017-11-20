@@ -1,33 +1,26 @@
 - key: sora
-  title: "sora"
+  title: sora
   type: group
+  # YAML Tips
   # >- : trailing spaces => keep, single new line => nothing,
   #      double newline => newline
   description: >-
     Some value 1
   fields:
-    # - name: connections
-    #   type: group
-    #   description: >-
-    #     connection specific information
-    #   fields:
-    #     - name: channel_id
-    #       type: keyword
-    #       description: >-
-    #         channel ID
-    #     - name: rtp.total_received_bytes
-    #       type: byte
-    #       description: >-
-    #         received bytes at sora server
-    #     # - name: turn
-    #     #   type: group
-    #     #   description: >-
-    #     #     TURN
-    #     #   fields:
-    #     #     - name: total_received_allocate_request
-    #     #       type: long
-    #     #       description:
-    #     #         total_received_allocate_request
+    - name: connections
+      type: group
+      description: >-
+        connection specific information
+      fields:
+        - name: channel_id
+          type: keyword
+          description: >-
+            channel ID
+        - name: rtp.total_received_bytes
+          type: bytes
+          cumulative: True
+          description: >-
+            received bytes at sora server
     - name: stats
       type: group
       description: >-

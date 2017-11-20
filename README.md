@@ -95,6 +95,13 @@ Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
 - `sora.connections.channel_client_id`: `channel_id` と `client_id` を
   スラッシュ (`/`) で結合した文字列
 
+## dashboard, visualization のセットアップ
+
+`sorabeat setup` を実行すると各数値型フィールドの visualization とサンプルの簡単なダッシュボードが
+ロードされます。
+適切な権限をもったユーザと、kibana の endpoint 設定が必要です。
+
+
 ------------
 
 # 以下、開発者向け
@@ -260,3 +267,38 @@ git fetch
 git checkout v6.0.0 # バージョン指定すること
 make copy-vendor
 ```
+
+### visualization / dashboard の生成, fields.yml の生成
+
+単純な visualization をスクリプト `scripts/visualization_single.sh` で生成している。
+入力が `scripts/sora_fields.yml` で、出力が `_meta/kibana/default/dashboard/sorabeat_vis1.json` である。
+
+### 手で作った dashboard の保存
+
+Kibana で dashboard の ID (`28516270-bec0-11e7-b277-79c0643bd2c8` のような文字列)を確認して、
+curl で Kibana API を叩くと取れる。
+
+例
+
+```
+KIBANA_BASE=https://foo.example.com
+USER_CRED='kibana_user:its_password'
+
+curl -s \
+     ${KIBANA_BASE}/api/kibana/dashboards/export'?dashboard='${DASHBOARD} \
+     -u ${USER_CRED}
+
+```
+
+dashboard としては練習で作ったものを export したものを
+`_meta/kibana/default/dashboard/exported-dashboard1.json` に入れている。
+
+## TODO
+
+- fields.yml も sora_fields.yml から生成できるようにしたい
+- dashboard を充実させる
+- fields.yml に無駄なフィールドが入っている
+- visualization で hostname フィルタ(クエリ)が Kibana UI として書けないか調べる
+- ARM64 パッケージング
+- パッケージを絞ってビルドを早くする
+

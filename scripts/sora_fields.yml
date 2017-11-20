@@ -328,7 +328,289 @@
       description: >-
         connection specific information
       fields:
+        - name: average_duration_sec
+          type: long
+          description: >-
+            average_duration_sec
+        - name: average_setup_time_msec
+          type: long
+          description: >-
+            average_setup_time_msec
+
         - name: total_ongoing_connections
           type: long
           description: >-
-            channel ID
+            total_ongoing_connections
+        - name: total_failed_connections
+          type: long
+          cumulative: True
+          description: >-
+            total_failed_connections
+        - name: total_successful_connections
+          type: long
+          cumulative: True
+          description: >-
+            total_successful_connections
+        - name: total_duration_sec
+          type: long
+          cumulative: True
+          description: >-
+            total_duration_sec
+
+        - name: error.sdp_generation_error
+          type: long
+          cumulative: True
+          description: >-
+            error.sdp_generation_error
+        - name: error.signaling_error
+          type: long
+          cumulative: True
+          description: >-
+            error.signaling_error
+
+        - name: browser.total_failed_browser_type.chrome
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.chrome
+        - name: browser.total_failed_browser_type.edge
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.edge
+        - name: browser.total_failed_browser_type.firefox
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.firefox
+        - name: browser.total_failed_browser_type.safari
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.safari
+        - name: browser.total_failed_browser_type.unknown
+          type: long
+          cumulative: True
+          description: >-
+            browser.total_failed_browser_type.unknown
+
+        - name: erlang_vm.memory.atom
+          type: long
+          description: >-
+            erlang_vm.memory.atom
+        - name: erlang_vm.memory.atom_used
+          type: long
+          description: >-
+            erlang_vm.memory.atom_used
+        - name: erlang_vm.memory.binary
+          type: long
+          description: >-
+            erlang_vm.memory.binary
+        - name: erlang_vm.memory.code
+          type: long
+          description: >-
+            erlang_vm.memory.code
+        - name: erlang_vm.memory.ets
+          type: long
+          description: >-
+            erlang_vm.memory.ets
+        - name: erlang_vm.memory.processes
+          type: long
+          description: >-
+            erlang_vm.memory.processes
+        - name: erlang_vm.memory.processes_used
+          type: long
+          description: >-
+            erlang_vm.memory.processes_used
+        - name: erlang_vm.memory.system
+          type: long
+          description: >-
+            erlang_vm.memory.system
+        - name: erlang_vm.memory.total
+          type: long
+          description: >-
+            erlang_vm.memory.total
+
+        - name: erlang_vm.statistics.run_queue
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue
+        - name: erlang_vm.statistics.context_switches
+          type: long
+          description: >-
+            erlang_vm.statistics.context_switches
+        - name: erlang_vm.statistics.total_active_tasks
+          type: long
+          description: >-
+            erlang_vm.statistics.total_active_tasks
+        - name: erlang_vm.statistics.total_active_tasks_all
+          type: long
+          description: >-
+            erlang_vm.statistics.total_active_tasks_all
+        - name: erlang_vm.statistics.total_run_queue_lengths
+          type: long
+          description: >-
+            erlang_vm.statistics.total_run_queue_lengths
+        - name: erlang_vm.statistics.total_run_queue_lengths_all
+          type: long
+          description: >-
+            erlang_vm.statistics.total_run_queue_lengths_all
+
+        - name: erlang_vm.statistics.active_tasks
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks
+        - name: erlang_vm.statistics.active_tasks_max
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_max
+        - name: erlang_vm.statistics.active_tasks_min
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_min
+        - name: erlang_vm.statistics.active_tasks_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_mean
+        - name: erlang_vm.statistics.active_tasks_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_stddev
+        - name: erlang_vm.statistics.active_tasks_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_imbalance
+
+        - name: erlang_vm.statistics.active_tasks_all
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all
+        - name: erlang_vm.statistics.active_tasks_all_max
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_max
+        - name: erlang_vm.statistics.active_tasks_all_min
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_min
+        - name: erlang_vm.statistics.active_tasks_all_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_mean
+        - name: erlang_vm.statistics.active_tasks_all_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_stddev
+        - name: erlang_vm.statistics.active_tasks_all_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.active_tasks_all_imbalance
+
+        - name: erlang_vm.statistics.run_queue_lengths
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths
+        - name: erlang_vm.statistics.run_queue_lengths_max
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_max
+        - name: erlang_vm.statistics.run_queue_lengths_min
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_min
+        - name: erlang_vm.statistics.run_queue_lengths_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_mean
+        - name: erlang_vm.statistics.run_queue_lengths_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_stddev
+        - name: erlang_vm.statistics.run_queue_lengths_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_imbalance
+
+        - name: erlang_vm.statistics.run_queue_lengths_all
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all
+        - name: erlang_vm.statistics.run_queue_lengths_all_max
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_max
+        - name: erlang_vm.statistics.run_queue_lengths_all_min
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_min
+        - name: erlang_vm.statistics.run_queue_lengths_all_mean
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_mean
+        - name: erlang_vm.statistics.run_queue_lengths_all_stddev
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_stddev
+        - name: erlang_vm.statistics.run_queue_lengths_all_imbalance
+          type: long
+          description: >-
+            erlang_vm.statistics.run_queue_lengths_all_imbalance
+
+        - name: erlang_vm.statistics.reductions.reductions_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.reductions.reductions_since_last_call
+        - name: erlang_vm.statistics.reductions.total_reductions
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.reductions.total_reductions
+
+        - name: erlang_vm.statistics.exact_reductions.exact_reductions_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.exact_reductions.exact_reductions_since_last_call
+        - name: erlang_vm.statistics.exact_reductions.total_exact_reductions
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.exact_reductions.total_exact_reductions
+
+        - name: erlang_vm.statistics.garbage_collection.number_of_gcs
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.garbage_collection.number_of_gcs
+        - name: erlang_vm.statistics.garbage_collection.words_reclaimed
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.garbage_collection.words_reclaimed
+
+        - name: erlang_vm.statistics.io.input
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.io.input
+        - name: erlang_vm.statistics.io.output
+          type: long
+          cumulative: True
+          description: >-
+            erlang_vm.statistics.io.output
+
+        - name: erlang_vm.statistics.runtime.time_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.runtime.time_since_last_call
+        - name: erlang_vm.statistics.runtime.total_run_time
+          type: long
+          description: >-
+            erlang_vm.statistics.runtime.total_run_time
+        - name: erlang_vm.statistics.wall_clock.wallclock_time_since_last_call
+          type: long
+          description: >-
+            erlang_vm.statistics.wall_clock.wallclock_time_since_last_call
+        - name: erlang_vm.statistics.wall_clock.total_wallclock_time
+          type: long
+          description: >-
+            erlang_vm.statistics.wall_clock.total_wallclock_time

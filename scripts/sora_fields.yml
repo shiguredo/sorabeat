@@ -7,6 +7,7 @@
   description: >-
     Some value 1
   fields:
+
     - name: connections
       type: group
       description: >-
@@ -16,11 +17,312 @@
           type: keyword
           description: >-
             channel ID
+        - name: client_id
+          type: keyword
+          description: >-
+            client ID
+        - name: timestamp
+          type: date
+          descrition: >-
+            timestamp
+
         - name: rtp.total_received_bytes
           type: bytes
           cumulative: True
           description: >-
-            received bytes at sora server
+            rtp.total_received_bytes
+        - name: rtp.total_received_packets
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_packets
+        - name: rtp.total_received_rtcp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp
+        - name: rtp.total_received_rtcp_bye
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_bye
+        - name: rtp.total_received_rtcp_psfb_afb
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_afb
+        - name: rtp.total_received_rtcp_psfb_fir
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_fir
+        - name: rtp.total_received_rtcp_psfb_pli
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_psfb_pli
+        - name: rtp.total_received_rtcp_rr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rr
+        - name: rtp.total_received_rtcp_rtpfb_generic_nack
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_generic_nack
+        - name: rtp.total_received_rtcp_rtpfb_tmmbn
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_tmmbn
+        - name: rtp.total_received_rtcp_rtpfb_tmmbr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_tmmbr
+        - name: rtp.total_received_rtcp_rtpfb_transport_wide
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_rtpfb_transport_wide
+        - name: rtp.total_received_rtcp_sdes
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_sdes
+        - name: rtp.total_received_rtcp_sr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_sr
+        - name: rtp.total_received_rtcp_unknown
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_unknown
+        - name: rtp.total_received_rtcp_xr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_xr
+        - name: rtp.total_received_rtp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_received_rtp
+        - name: rtp.total_sent_bytes
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_sent_bytes
+        - name: rtp.total_sent_packets
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_packets
+        - name: rtp.total_sent_rtcp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp
+        - name: rtp.total_sent_rtcp_bye
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_bye
+        - name: rtp.total_sent_rtcp_psfb_afb
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_afb
+        - name: rtp.total_sent_rtcp_psfb_fir
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_fir
+        - name: rtp.total_sent_rtcp_psfb_pli
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_psfb_pli
+        - name: rtp.total_sent_rtcp_rr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rr
+        - name: rtp.total_sent_rtcp_rtpfb_generic_nack
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_generic_nack
+        - name: rtp.total_sent_rtcp_rtpfb_tmmbn
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_tmmbn
+        - name: rtp.total_sent_rtcp_rtpfb_tmmbr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_tmmbr
+        - name: rtp.total_sent_rtcp_rtpfb_transport_wide
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_rtpfb_transport_wide
+        - name: rtp.total_sent_rtcp_sdes
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_sdes
+        - name: rtp.total_sent_rtcp_sr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_sr
+        - name: rtp.total_sent_rtcp_unknown
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_unknown
+        - name: rtp.total_sent_rtcp_xr
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_xr
+        - name: rtp.total_sent_rtp
+          type: long
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtp
+
+        - name: turn.total_received_allocate_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_allocate_request
+        - name: turn.total_received_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_binding_request
+        - name: turn.total_received_channel_bind_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_channel_bind_request
+        - name: turn.total_received_channel_data
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_channel_data
+        - name: turn.total_received_create_permission_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_create_permission_request
+        - name: turn.total_received_refresh_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_refresh_request
+        - name: turn.total_received_send_indication
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_send_indication
+        - name: turn.total_received_turn_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_error
+        - name: turn.total_received_turn_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_request
+        - name: turn.total_received_turn_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_received_turn_binding_success
+        - name: turn.total_sent_allocate_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_allocate_error
+        - name: turn.total_sent_allocate_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_allocate_success
+        - name: turn.total_sent_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_binding_error
+        - name: turn.total_sent_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_binding_success
+        - name: turn.total_sent_channel_bind_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_bind_error
+        - name: turn.total_sent_channel_bind_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_bind_success
+        - name: turn.total_sent_channel_data
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_channel_data
+        - name: turn.total_sent_create_permission_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_create_permission_error
+        - name: turn.total_sent_create_permission_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_create_permission_success
+        - name: turn.total_sent_data_indication
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_data_indication
+        - name: turn.total_sent_refresh_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_refresh_error
+        - name: turn.total_sent_refresh_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_refresh_success
+        - name: turn.total_sent_turn_binding_error
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_error
+        - name: turn.total_sent_turn_binding_request
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_request
+        - name: turn.total_sent_turn_binding_success
+          type: long
+          cumulative: True
+          description: >-
+            turn.total_sent_turn_binding_success
+
     - name: stats
       type: group
       description: >-

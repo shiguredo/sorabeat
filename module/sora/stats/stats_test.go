@@ -143,14 +143,14 @@ func TestFetchEventContents(t *testing.T) {
 	statistics, _ := erlang_vm["statistics"].(map[string]interface{})
 
 	active_tasks, _ := statistics["active_tasks"]
-	assert.Equal(t, []interface{}{1., 0., 0.},  active_tasks)
+	assert.Equal(t, []interface{}{1., 0., 0.}, active_tasks)
 	assert.InDelta(t, 0., statistics["active_tasks_min"], delta)
 	assert.InDelta(t, 1., statistics["active_tasks_max"], delta)
 	assert.InDelta(t, 1., statistics["active_tasks_imbalance"], delta)
 
-	assert.InDelta(t,  2., statistics["active_tasks_all_min"], delta)
+	assert.InDelta(t, 2., statistics["active_tasks_all_min"], delta)
 	assert.InDelta(t, 10., statistics["active_tasks_all_max"], delta)
-	assert.InDelta(t,  5.25, statistics["active_tasks_all_mean"], delta)
-	assert.InDelta(t,  2.95, statistics["active_tasks_all_stddev"], delta)
-	assert.InDelta(t,  5., statistics["active_tasks_all_imbalance"], delta)
+	assert.InDelta(t, 5.25, statistics["active_tasks_all_mean"], delta)
+	assert.InDelta(t, 2.95, statistics["active_tasks_all_stddev"], delta)
+	assert.InDelta(t, 5., statistics["active_tasks_all_imbalance"], delta)
 }

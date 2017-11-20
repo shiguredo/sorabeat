@@ -12,7 +12,18 @@
 
 ## develop
 
-## ADD
+-
+
+## 1.0.3
+
+### ADD
+
+- Beats 6.0.0 のサブコマンドインターフェースに移行した
+- visualization と 簡単な dashboard の定義を追加した
+
+## 1.0.2
+
+### ADD
 
 - beats バージョンを 6.0.0 に上げた
 

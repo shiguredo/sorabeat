@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/shiguredo/sorabeat/tree/develop.svg?style=svg)](https://circleci.com/gh/shiguredo/sorabeat/tree/develop)
+
 # Sorabeat
 
 Sorabeat は [WebRTC SFU Sora](https://sora.shiguredo.jp) の統計情報を Elasticsearch  や Logstash
@@ -42,24 +44,99 @@ service sorabeat start
 
 *TODO* : DEB, tar.gz インストールのときの使い方を追加する
 
-## Elasticsearch
+## Elasticsearch インデックス
 
 Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
+
+## stats メトリックセット
+
+ソースは Sora の `GetStatsReport` です。
+フィールド名は `sora.stats.` をプレフィックスに持ちます。例えば `average_duration_sec`
+は Elasticsearch では `sora.stats.average_duration_sec` フィールドに対応します。
+
+### Sorabeat が追加するフィールド
+
+以下の項目はもともと数値のリストです。
+
+- erlang_vm.statistics.active_tasks
+- erlang_vm.statistics.active_tasks_all
+- erlang_vm.statistics.run_queue_lengths
+- erlang_vm.statistics.run_queue_lengths_all
+
+それらに対して最大値(max)、最小値(min)、平均値(mean)、標準偏差(stdddv)と
+不均衡さ(imbalance)を
+フィールドとして追加します。`erlang_vm.statistics.active_tasks` を例に取ると
+次のフィールドが追加されます。
+
+- sora.stats.erlang_vm.statistics.active_tasks_max
+- sora.stats.erlang_vm.statistics.active_tasks_min
+- sora.stats.erlang_vm.statistics.active_tasks_mean
+- sora.stats.erlang_vm.statistics.active_tasks_stddev
+- sora.stats.erlang_vm.statistics.active_tasks_imbalance
+
+各リスト values の不均衡さ(imbalance)は次で計算しています。
+
+```
+                    最大値(values)
+不均衡さ = ------------------------------
+             最大値(最小値(values) , 1)
+```
+
+
+## connections メトリックセット
+
+ソースは Sora の `GetStatsAllConnections` です。
+フィールド名は `sora.connections.` をプレフィックスに持ちます。例えば `rtp` の下にある
+`total_received_bytes` は Elasticsearch では `sora.connections.rtp.total_received_bytes`
+フィールドに対応します。
+
+### Sorabeat が追加するフィールド
+
+- `sora.connections.channel_client_id`: `channel_id` と `client_id` を
+  スラッシュ (`/`) で結合した文字列
+
+## dashboard, visualization のセットアップ
+
+`sorabeat setup` を実行すると各数値型フィールドの visualization とサンプルの簡単なダッシュボードが
+ロードされます。
+適切な権限をもったユーザと、kibana の endpoint 設定が必要です。
 
 
 ------------
 
 # 以下、開発者向け
 
-## カスタム beat 開発
+## カスタム beat 開発の参考
 
-ref.
-- Creating a Beat based on Metricbeat | Metricbeat Reference [5.6] | Elastic
-  https://www.elastic.co/guide/en/beats/metricbeat/current/creating-beat-from-metricbeat.html
+- Beats 開発全般
+
+  - Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/index.html
+- Metricbeat をベースにしたカスタム beat 開発 (Sorabeat はコレ)
+
+  - Creating a Beat based on Metricbeat | Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/creating-beat-from-metricbeat.html
+
+- Beat や Beat module のための Kibana ダッシュボードを作る方法
+
+  - Creating New Kibana Dashboards for a Beat or a Beat module | Beats Developer Guide [master] | Elastic
+    https://www.elastic.co/guide/en/beats/devguide/current/new-dashboards.html
+
+- 以下、Sorabeat には関係ないが、近隣なので参考まで
+
+  - Metricbeat のモジュールだけを新規で開発
+
+    - Creating a Metricbeat Module | Beats Developer Guide [master] | Elastic
+      https://www.elastic.co/guide/en/beats/devguide/current/creating-metricbeat-module.html
+
+  - イチからカスタム Beat を開発 (Sorabeat には関係ない、参考まで)
+
+    - Creating a New Beat | Beats Developer Guide [master] | Elastic
+      https://www.elastic.co/guide/en/beats/devguide/current/new-beat.html
 
 ### 準備
 
-- Go
+- Go 1.9.2
 - Python 2.7 (ノ￣￣∇￣￣)ノ‾‾‾━━┻━┻━━
 - virtualenv
 
@@ -72,6 +149,7 @@ git checkout v6.0.0-rc2
 python ${GOPATH}/src/github.com/elastic/beats/script/generate.py --type=metricbeat
 cd ${GOPATH}/src/github.com/shiguredo/sorabeat
 make setup
+## 対話形式で進むので入力
 ## module => sora
 ## metricset => connections
 ```
@@ -103,10 +181,12 @@ go build -i
 - sorabeat.reference.yml
 - modules.d/
 
+これらは最終的にパッケージに入るので、認証情報を入れないこと。
+
 *Tips*
 
-- 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める
-  例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
+- 認証情報、接続情報などを別の YAML ファイルに入れておき、コマンドライン起動時に読み込める。
+  複数も可能。例: `./sorabeat -c sorabeat.yml -c sorabeat.cred.yml -e -d '*'`
 
 生成
 
@@ -117,12 +197,27 @@ make update2
 *NOTE* 生成されるファイルが metricbeat となる(libbeat/metricbeat での抽象化不足?)バグのため、
 update target を update2 で少々上書きしている。以下に出てくる set_version2, package2 も同様。
 
+*TODO* ↑の issue を beats repogitory に切る
 
 ### 実行 (debug 用)
 
 ```
 ./sorabeat -c sorabeat.edited.yml -e -d "*"
 ```
+
+起動オプション
+
+| オプション      | 説明                                 |
+|-----------------|--------------------------------------|
+| -e              | ログをファイルではなく stderr に出す |
+| -d \<selector\> | デバッグセレクタを有効にする         |
+|                 | セレクタはコード読むしかなさそう     |
+
+セレクタ
+
+- `cfgfile` : 設定ファイルまわり
+- `publish` : es / logstash への送信
+- `modules` : 読み込まれたモジュールを羅列 (metricbeat.go)
 
 ### バージョン設定
 
@@ -173,87 +268,37 @@ git checkout v6.0.0 # バージョン指定すること
 make copy-vendor
 ```
 
----------------
+### visualization / dashboard の生成, fields.yml の生成
 
-# 以下、生成された README そのまま
+単純な visualization をスクリプト `scripts/visualization_single.sh` で生成している。
+入力が `scripts/sora_fields.yml` で、出力が `_meta/kibana/default/dashboard/sorabeat_vis1.json` である。
 
-sorabeat is a beat based on metricbeat which was generated with metricbeat/metricset generator.
+### 手で作った dashboard の保存
 
+Kibana で dashboard の ID (`28516270-bec0-11e7-b277-79c0643bd2c8` のような文字列)を確認して、
+curl で Kibana API を叩くと取れる。
 
-## Getting started
-
-To get started run the following command. This command should only be run once.
-
-```
-make setup
-```
-
-It will ask you for the module and metricset name. Insert the name accordingly.
-
-To compile your beat run `make`. Then you can run the following command to see the first output:
+例
 
 ```
-sorabeat -e -d "*"
-```
+KIBANA_BASE=https://foo.example.com
+USER_CRED='kibana_user:its_password'
 
-In case further modules are metricsets should be added, run:
-
-```
-make create-metricset
-```
-
-After updates to the fields or config files, always run
+curl -s \
+     ${KIBANA_BASE}/api/kibana/dashboards/export'?dashboard='${DASHBOARD} \
+     -u ${USER_CRED}
 
 ```
-make collect
-```
 
-This updates all fields and docs with the most recent changes.
+dashboard としては練習で作ったものを export したものを
+`_meta/kibana/default/dashboard/exported-dashboard1.json` に入れている。
 
-## Use vendoring
+## TODO
 
-We recommend to use vendoring for your beat. This means the dependencies are put into your beat folder. The beats team currently uses [govendor](https://github.com/kardianos/govendor) for vendoring.
+- fields.yml も sora_fields.yml から生成できるようにしたい
+- dashboard を充実させる
+- fields.yml に無駄なフィールドが入っている
+- visualization で hostname フィルタ(クエリ)が Kibana UI として書けないか調べる
+- ARM64 パッケージング
+- パッケージを絞ってビルドを早くする
 
-```
-govendor init
-govendor update +e
-```
-
-This will create a directory `vendor` inside your repository. To make sure all dependencies for the Makefile commands are loaded from the vendor directory, find the following line in your Makefile:
-
-```
-ES_BEATS=${GOPATH}/src/github.com/elastic/beats
-```
-
-Replace it with:
-```
-ES_BEATS=./vendor/github.com/elastic/beats
-```
-
-
-## Versioning
-
-We recommend to version your repository with git and make it available on Github so others can also use your project. The initialise the git repository and add the first commits, you can use the following commands:
-
-```
-git init
-git add README.md CONTRIBUTING.md
-git commit -m "Initial commit"
-git add LICENSE
-git commit -m "Add the LICENSE"
-git add .gitignore
-git commit -m "Add git settings"
-git add .
-git reset -- .travis.yml
-git commit -m "Add sorabeat"
-```
-
-## Packaging
-
-The beat frameworks provides tools to crosscompile and package your beat for different platforms. This requires [docker](https://www.docker.com/) and vendoring as described above. To build packages of your beat, run the following command:
-
-```
-make package
-```
-
-This will fetch and create all images required for the build process. The hole process to finish can take several minutes.

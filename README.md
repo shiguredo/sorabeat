@@ -206,6 +206,12 @@ update target を update2 で少々上書きしている。以下に出てくる
 | -d \<selector\> | デバッグセレクタを有効にする         |
 |                 | セレクタはコード読むしかなさそう     |
 
+セレクタ
+
+- `cfgfile` : 設定ファイルまわり
+- `publish` : es / logstash への送信
+- `modules` : 読み込まれたモジュールを羅列 (metricbeat.go)
+
 ### バージョン設定
 
 ```

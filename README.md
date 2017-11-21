@@ -133,14 +133,13 @@ Elasticsearch のインデックスパターンは、 `sorabeat-*` です。
 
     - Creating a New Beat | Beats Developer Guide [master] | Elastic
       https://www.elastic.co/guide/en/beats/devguide/current/new-beat.html
-
 ### 準備
 
 - Go 1.9.2
 - Python 2.7 (ノ￣￣∇￣￣)ノ‾‾‾━━┻━┻━━
 - virtualenv
 
-### 生成
+## 生成
 
 ```
 go get github.com/elastic/beats/metricbeat
@@ -154,7 +153,7 @@ make setup
 ## metricset => connections
 ```
 
-### ビルド
+## ビルド
 
 ```
 make
@@ -167,7 +166,7 @@ go build -i
 ```
 
 
-### 設定ファイル
+## 設定ファイル
 
 *注意*
 
@@ -199,7 +198,7 @@ update target を update2 で少々上書きしている。以下に出てくる
 
 *TODO* ↑の issue を beats repogitory に切る
 
-### 実行 (debug 用)
+## 実行 (debug 用)
 
 ```
 ./sorabeat -c sorabeat.edited.yml -e -d "*"
@@ -219,7 +218,7 @@ update target を update2 で少々上書きしている。以下に出てくる
 - `publish` : es / logstash への送信
 - `modules` : 読み込まれたモジュールを羅列 (metricbeat.go)
 
-### バージョン設定
+## バージョン設定
 
 ```
 VERSION=0.1.0 make set_version2
@@ -229,7 +228,7 @@ VERSION=0.1.0 make set_version2
 
 *TODO* そのうち git tag と連動したい
 
-### パッケージ生成
+## パッケージ生成
 
 デフォルトでは SNAPSHOT が生成される
 
@@ -249,7 +248,7 @@ make python-env
 SNAPSHOT=false make package2
 ```
 
-### Linux/ARM64 用バイナリ生成
+## Linux/ARM64 用バイナリ生成
 
 ```
 GOOS=linux GOARCH=arm64 make
@@ -257,7 +256,7 @@ GOOS=linux GOARCH=arm64 make
 
 ARM 向けパッケージングは未調査
 
-### beats のバージョン更新
+## バージョン更新
 
 ```
 cd /path/to/sorabeat
@@ -268,12 +267,12 @@ git checkout v6.0.0 # バージョン指定すること
 make copy-vendor
 ```
 
-### visualization / dashboard の生成, fields.yml の生成
+## visualization / dashboard の生成, fields.yml の生成
 
 単純な visualization をスクリプト `scripts/visualization_single.sh` で生成している。
 入力が `scripts/sora_fields.yml` で、出力が `_meta/kibana/default/dashboard/sorabeat_vis1.json` である。
 
-### 手で作った dashboard の保存
+## 手で作った dashboard の保存
 
 Kibana で dashboard の ID (`28516270-bec0-11e7-b277-79c0643bd2c8` のような文字列)を確認して、
 curl で Kibana API を叩くと取れる。
@@ -293,7 +292,7 @@ curl -s \
 dashboard としては練習で作ったものを export したものを
 `_meta/kibana/default/dashboard/exported-dashboard1.json` に入れている。
 
-## TODO
+# TODO
 
 - fields.yml も sora_fields.yml から生成できるようにしたい
 - dashboard を充実させる

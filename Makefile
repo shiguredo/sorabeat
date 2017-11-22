@@ -19,8 +19,8 @@ BEAT_CHECKOUT_TAG=v6.0.0
 # Initial beat setup
 .PHONY: setup
 setup: copy-vendor
-	make create-metricset
-	make collect
+	$(MAKE) create-metricset
+	$(MAKE) collect
 
 .PHONY: checkout-beats
 checkout-beats:
@@ -56,18 +56,25 @@ update2: update
 
 .PHONY: package2
 package2: update2
-	make package
+	$(MAKE) package
 
+.PHONY: package2-release
+package2-release: update2
+	SNAPSHOT=false $(MAKE) package
+
+.PHONY: linux-x86_64-bin
 linux-x86_64-bin:
 	@mkdir -p $(BUILD_DIR)/linux-x86_64/
 	GOOS=linux GOARCH=x86_64 go build -i -o $(BUILD_DIR)/linux-x86_64/sorabeat
 
+.PHONY: linux-arm64-bin
 linux-arm64-bin:
 	@mkdir -p $(BUILD_DIR)/linux-arm64/
 	GOOS=linux GOARCH=arm64 go build -i -o $(BUILD_DIR)/linux-arm64/sorabeat
 
+.PHONY: ci-setup
 ci-setup:
 	go get -v -t -d ./...
-	make checkout-beats
-	make copy-vendor
+	$(MAKE) checkout-beats
+	$(MAKE) copy-vendor
 	sudo apt install python-virtualenv

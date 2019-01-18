@@ -409,7 +409,7 @@ func visualizationJson(
 					params["axis_formatter"] = "number"
 					params["axis_min"] = axisMin
 					params["axis_position"] = "left"
-					params["id"] = uuid.NewV4()
+					params["id"], _ = uuid.NewV4()
 					params["index_pattern"] = "*"
 					params["interval"] = "auto"
 
@@ -422,11 +422,11 @@ func visualizationJson(
 						series0["color"] = "#68BC00"
 						series0["fill"] = "0"
 						series0["formatter"] = formatter // e.g. "number", "bytes"
-						series0["id"] = uuid.NewV4()
+						series0["id"], _ = uuid.NewV4()
 						series0["label"] = item
 						series0["line_width"] = "2"
 
-						metrics0Id := uuid.NewV4()
+						metrics0Id, _ := uuid.NewV4()
 						{
 							metrics := make([]map[string]interface{}, 0)
 							metrics0 := jsonObj()
@@ -436,7 +436,7 @@ func visualizationJson(
 							metrics = append(metrics, metrics0)
 							if derivative {
 								metrics1 := jsonObj()
-								metrics1Id := uuid.NewV4()
+								metrics1Id, _ := uuid.NewV4()
 								metrics1["id"] = metrics1Id
 								metrics1["type"] = "derivative"
 								metrics1["field"] = metrics0Id

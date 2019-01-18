@@ -26,16 +26,26 @@
           descrition: >-
             timestamp
 
-        - name: rtp.total_received_bytes
+        - name: rtp.total_received_byte_size
           type: bytes
           cumulative: True
           description: >-
-            rtp.total_received_bytes
-        - name: rtp.total_received_packets
+            rtp.total_received_byte_size
+        - name: rtp.total_received_rtp_byte_size
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_received_rtp_byte_size
+        - name: rtp.total_received_rtcp_byte_size
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_received_rtcp_byte_size
+        - name: rtp.total_received
           type: long
           cumulative: True
           description: >-
-            rtp.total_received_packets
+            rtp.total_received
         - name: rtp.total_received_rtcp
           type: long
           cumulative: True
@@ -111,16 +121,26 @@
           cumulative: True
           description: >-
             rtp.total_received_rtp
-        - name: rtp.total_sent_bytes
+        - name: rtp.total_sent_byte_size
           type: bytes
           cumulative: True
           description: >-
-            rtp.total_sent_bytes
-        - name: rtp.total_sent_packets
+            rtp.total_sent_byte_size
+        - name: rtp.total_sent_rtp_byte_size
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtp_byte_size
+        - name: rtp.total_sent_rtcp_byte_size
+          type: bytes
+          cumulative: True
+          description: >-
+            rtp.total_sent_rtcp_byte_size
+        - name: rtp.total_sent
           type: long
           cumulative: True
           description: >-
-            rtp.total_sent_packets
+            rtp.total_sent
         - name: rtp.total_sent_rtcp
           type: long
           cumulative: True
